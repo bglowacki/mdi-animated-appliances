@@ -3,7 +3,7 @@
  * https://github.com/bglowacki/mdi-animated-appliances
  * MIT License. Icon geometry: Material Design Icons by Pictogrammers (Apache-2.0), see NOTICE.
  */
-const VERSION = '0.4.0';
+const VERSION = '0.4.1';
 
 /* ---------- MDI "dishwasher" geometry (split so the drop can be swapped for a check) ---------- */
 const DISHWASHER_FRAME =
@@ -315,14 +315,14 @@ ha-card { height: 100%; overflow: hidden; cursor: pointer; }
 .svg.s-washing .drop.hot, .svg.s-drying .drop.hot { fill: #ffb454; }
 .svg.s-returning .frame { fill: #ffcf8a; }
 .svg.s-washing .vbody { fill: #8fd0ff; animation: pulse2 1.8s ease-in-out infinite; }
-.svg.s-returning .vbody { fill: #ffcf8a; animation: pulse2 2.6s ease-in-out infinite; }
+.svg.s-returning .vbody { fill: #ffcf8a; animation: pulse2 2s ease-in-out infinite; }
 .svg.s-idle .vbody { fill: #9be0b8; }
-.vring { transform-origin: 12px 12px; animation: spin 2.2s linear infinite; }
+.vring { transform-origin: 12px 12px; animation: spin 1.8s linear infinite; }
 .vring.slow { animation-duration: 4s; }
 .vring.rev { animation-direction: reverse; }
 .slowglow { animation: glowslow 3.2s ease-in-out infinite; }
-.spokes { transform-origin: 6px 14px; animation: spin 1.1s linear infinite; }
-.blink { animation: pulse 1.4s ease-in-out infinite; }
+.spokes { transform-origin: 6px 14px; animation: spin 1s linear infinite; }
+.blink { animation: pulse 2s ease-in-out infinite; }
 .mowbody.bob { animation: bob .5s ease-in-out infinite alternate; }
 .half.tumble { animation: tumble 2.4s ease-in-out infinite alternate; }
 .half.spinfast { animation: spin 0.45s linear infinite; }

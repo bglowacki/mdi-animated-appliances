@@ -5,7 +5,7 @@ icon follows the appliance: water moves in the window of a dishwasher, the drum 
 turns, a tumble dryer glows with moving heat waves, a robot vacuum circles its ring, a robot mower
 spins its wheel – and a check draws itself when the cycle is finished.
 
-![Preview](assets/preview.gif)
+![Preview](assets/preview.png)
 
 Supported appliances: **dishwasher**, **washer** (washing machine), **dryer** (tumble dryer), **vacuum** (robot vacuum) and **mower** (robot lawn mower). More to come – pick one with the `appliance` option.
 
@@ -15,6 +15,16 @@ Supported appliances: **dishwasher**, **washer** (washing machine), **dryer** (t
 * States: washing / cleaning / mowing, spinning (washer), drying, returning (robots), finished, paused, delayed start, error, idle / docked, unavailable.
 * Optional progress bar and finish time for appliances; battery level for robots.
 * Visual editor, English and Polish labels, honours `prefers-reduced-motion`.
+
+## Gallery
+
+Each appliance has its own animation (seamless loops, shown while running).
+
+| | |
+|---|---|
+| **Dishwasher** – `wave`<br>![Dishwasher](assets/dishwasher.gif) | **Washing machine** – `tumble`<br>![Washing machine](assets/washer.gif) |
+| **Tumble dryer** – `heat`<br>![Tumble dryer](assets/dryer.gif) | **Robot vacuum** – `clean`<br>![Robot vacuum](assets/vacuum.gif) |
+| **Robot mower** – `mow`<br>![Robot mower](assets/mower.gif) | |
 
 ## Installation
 
