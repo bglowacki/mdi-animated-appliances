@@ -18,135 +18,136 @@ Supported appliances: **dishwasher**, **washer** (washing machine), **dryer** (t
 
 ## Gallery
 
-Every animation is a seamless loop. Expand an appliance to see all of its animations and states; the YAML name of each animation is the `variant` value.
+Every animation is a seamless loop. Expand an appliance; the name under each icon is the `variant` value.
 
 <details>
-<summary><b>Dishwasher</b> — 5 animations, 6 more states (<code>appliance: dishwasher</code>)</summary>
+<summary><b>Dishwasher</b> — 5 animations (<code>appliance: dishwasher</code>)</summary>
 
 <br>
 
 <table>
 <tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/dishwasher-wave.gif" width="240" alt="Dishwasher wave"><br><b>wave</b> · default<br><sub>water moving in the window</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/dishwasher-bubbles.gif" width="240" alt="Dishwasher bubbles"><br><b>bubbles</b><br><sub>bubbles rising</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/dishwasher-drops.gif" width="240" alt="Dishwasher drops"><br><b>drops</b><br><sub>falling drops</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/dishwasher-wave.gif" width="140" alt="Dishwasher wave"><br><sub>wave (default)</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/dishwasher-bubbles.gif" width="140" alt="Dishwasher bubbles"><br><sub>bubbles</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/dishwasher-drops.gif" width="140" alt="Dishwasher drops"><br><sub>drops</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/dishwasher-sway.gif" width="140" alt="Dishwasher sway"><br><sub>sway</sub></td>
 </tr>
 <tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/dishwasher-sway.gif" width="240" alt="Dishwasher sway"><br><b>sway</b><br><sub>the whole icon sways</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/dishwasher-drying.gif" width="240" alt="Dishwasher drying"><br><b>drying</b><br><sub>drying phase: steam</sub></td>
-<td width="33%"></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/dishwasher-drying.gif" width="140" alt="Dishwasher drying"><br><sub>drying</sub></td>
+<td width="25%"></td>
+<td width="25%"></td>
+<td width="25%"></td>
 </tr>
 </table>
 
-<p><b>Other states:</b> finished · paused · delayed start · needs attention · idle · unavailable</p>
+<p><sub>Other states: finished · paused · delayed start · needs attention · idle · unavailable</sub></p>
 <img src="assets/gallery/dishwasher-states.png" width="100%" alt="Dishwasher states">
 
 </details>
 
 <details>
-<summary><b>Washing machine</b> — 5 animations, 6 more states (<code>appliance: washer</code>)</summary>
+<summary><b>Washing machine</b> — 5 animations (<code>appliance: washer</code>)</summary>
 
 <br>
 
 <table>
 <tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/washer-tumble.gif" width="240" alt="Washing machine tumble"><br><b>tumble</b> · default<br><sub>drum swings, water sloshes</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/washer-bubbles.gif" width="240" alt="Washing machine bubbles"><br><b>bubbles</b><br><sub>bubbles rising</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/washer-sway.gif" width="240" alt="Washing machine sway"><br><b>sway</b><br><sub>the whole icon sways</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/washer-tumble.gif" width="140" alt="Washing machine tumble"><br><sub>tumble (default)</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/washer-bubbles.gif" width="140" alt="Washing machine bubbles"><br><sub>bubbles</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/washer-sway.gif" width="140" alt="Washing machine sway"><br><sub>sway</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/washer-spinning.gif" width="140" alt="Washing machine spinning"><br><sub>spinning</sub></td>
 </tr>
 <tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/washer-spinning.gif" width="240" alt="Washing machine spinning"><br><b>spinning</b><br><sub>spin: drum spins fast</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/washer-drying.gif" width="240" alt="Washing machine drying"><br><b>drying</b><br><sub>drying phase: steam</sub></td>
-<td width="33%"></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/washer-drying.gif" width="140" alt="Washing machine drying"><br><sub>drying</sub></td>
+<td width="25%"></td>
+<td width="25%"></td>
+<td width="25%"></td>
 </tr>
 </table>
 
-<p><b>Other states:</b> finished · paused · delayed start · needs attention · idle · unavailable</p>
+<p><sub>Other states: finished · paused · delayed start · needs attention · idle · unavailable</sub></p>
 <img src="assets/gallery/washer-states.png" width="100%" alt="Washing machine states">
 
 </details>
 
 <details>
-<summary><b>Tumble dryer</b> — 3 animations, 6 more states (<code>appliance: dryer</code>)</summary>
+<summary><b>Tumble dryer</b> — 3 animations (<code>appliance: dryer</code>)</summary>
 
 <br>
 
 <table>
 <tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/dryer-heat.gif" width="240" alt="Tumble dryer heat"><br><b>heat</b> · default<br><sub>glowing drum, heat waves</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/dryer-tumble.gif" width="240" alt="Tumble dryer tumble"><br><b>tumble</b><br><sub>items orbit the drum</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/dryer-sway.gif" width="240" alt="Tumble dryer sway"><br><b>sway</b><br><sub>the whole icon sways</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/dryer-heat.gif" width="140" alt="Tumble dryer heat"><br><sub>heat (default)</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/dryer-tumble.gif" width="140" alt="Tumble dryer tumble"><br><sub>tumble</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/dryer-sway.gif" width="140" alt="Tumble dryer sway"><br><sub>sway</sub></td>
+<td width="25%"></td>
 </tr>
 </table>
 
-<p><b>Other states:</b> finished · paused · delayed start · needs attention · idle · unavailable</p>
+<p><sub>Other states: finished · paused · delayed start · needs attention · idle · unavailable</sub></p>
 <img src="assets/gallery/dryer-states.png" width="100%" alt="Tumble dryer states">
 
 </details>
 
 <details>
-<summary><b>Robot vacuum</b> — 12 animations, 4 more states (<code>appliance: vacuum</code>)</summary>
+<summary><b>Robot vacuum</b> — 12 animations (<code>appliance: vacuum</code>)</summary>
 
 <br>
 
 <table>
 <tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-clean.gif" width="240" alt="Robot vacuum clean"><br><b>clean</b> · default<br><sub>arc circles the ring</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-scan.gif" width="240" alt="Robot vacuum scan"><br><b>scan</b><br><sub>radar sweep</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-sonar.gif" width="240" alt="Robot vacuum sonar"><br><b>sonar</b><br><sub>expanding rings</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-clean.gif" width="140" alt="Robot vacuum clean"><br><sub>clean (default)</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-scan.gif" width="140" alt="Robot vacuum scan"><br><sub>scan</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-sonar.gif" width="140" alt="Robot vacuum sonar"><br><sub>sonar</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-bounce.gif" width="140" alt="Robot vacuum bounce"><br><sub>bounce</sub></td>
 </tr>
 <tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-bounce.gif" width="240" alt="Robot vacuum bounce"><br><b>bounce</b><br><sub>body roams in the ring</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-suction.gif" width="240" alt="Robot vacuum suction"><br><b>suction</b><br><sub>dust pulled in</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-vortex.gif" width="240" alt="Robot vacuum vortex"><br><b>vortex</b><br><sub>dust spirals in</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-suction.gif" width="140" alt="Robot vacuum suction"><br><sub>suction</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-vortex.gif" width="140" alt="Robot vacuum vortex"><br><sub>vortex</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-brush.gif" width="140" alt="Robot vacuum brush"><br><sub>brush</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-bin.gif" width="140" alt="Robot vacuum bin"><br><sub>bin</sub></td>
 </tr>
 <tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-brush.gif" width="240" alt="Robot vacuum brush"><br><b>brush</b><br><sub>side brush sweeps</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-bin.gif" width="240" alt="Robot vacuum bin"><br><b>bin</b><br><sub>dust bin fills up</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-sparkle.gif" width="240" alt="Robot vacuum sparkle"><br><b>sparkle</b><br><sub>shine on a clean floor</sub></td>
-</tr>
-<tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-mop.gif" width="240" alt="Robot vacuum mop"><br><b>mop</b><br><sub>water wave (mopping)</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-sway.gif" width="240" alt="Robot vacuum sway"><br><b>sway</b><br><sub>the whole icon sways</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/vacuum-returning.gif" width="240" alt="Robot vacuum returning"><br><b>returning</b><br><sub>back to the dock</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-sparkle.gif" width="140" alt="Robot vacuum sparkle"><br><sub>sparkle</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-mop.gif" width="140" alt="Robot vacuum mop"><br><sub>mop</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-sway.gif" width="140" alt="Robot vacuum sway"><br><sub>sway</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/vacuum-returning.gif" width="140" alt="Robot vacuum returning"><br><sub>returning</sub></td>
 </tr>
 </table>
 
-<p><b>Other states:</b> docked · paused · needs attention · unavailable</p>
-<img src="assets/gallery/vacuum-states.png" width="100%" alt="Robot vacuum states">
+<p><sub>Other states: docked · paused · needs attention · unavailable</sub></p>
+<img src="assets/gallery/vacuum-states.png" width="68%" alt="Robot vacuum states">
 
 </details>
 
 <details>
-<summary><b>Robot mower</b> — 11 animations, 4 more states (<code>appliance: mower</code>)</summary>
+<summary><b>Robot mower</b> — 11 animations (<code>appliance: mower</code>)</summary>
 
 <br>
 
 <table>
 <tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/mower-mow.gif" width="240" alt="Robot mower mow"><br><b>mow</b> · default<br><sub>wheel turns, light pulses</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/mower-grass.gif" width="240" alt="Robot mower grass"><br><b>grass</b><br><sub>cutting line over grass</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/mower-clippings.gif" width="240" alt="Robot mower clippings"><br><b>clippings</b><br><sub>blade and flying clippings</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/mower-mow.gif" width="140" alt="Robot mower mow"><br><sub>mow (default)</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/mower-grass.gif" width="140" alt="Robot mower grass"><br><sub>grass</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/mower-clippings.gif" width="140" alt="Robot mower clippings"><br><sub>clippings</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/mower-cut.gif" width="140" alt="Robot mower cut"><br><sub>cut</sub></td>
 </tr>
 <tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/mower-cut.gif" width="240" alt="Robot mower cut"><br><b>cut</b><br><sub>cutting line, blade tips fall</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/mower-mulch.gif" width="240" alt="Robot mower mulch"><br><b>mulch</b><br><sub>clippings spray out the back</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/mower-deck.gif" width="240" alt="Robot mower deck"><br><b>deck</b><br><sub>blade spins, grass pulled in</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/mower-mulch.gif" width="140" alt="Robot mower mulch"><br><sub>mulch</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/mower-deck.gif" width="140" alt="Robot mower deck"><br><sub>deck</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/mower-meadow.gif" width="140" alt="Robot mower meadow"><br><sub>meadow</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/mower-swath.gif" width="140" alt="Robot mower swath"><br><sub>swath</sub></td>
 </tr>
 <tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/mower-meadow.gif" width="240" alt="Robot mower meadow"><br><b>meadow</b><br><sub>tall grass and flowers sway</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/mower-swath.gif" width="240" alt="Robot mower swath"><br><b>swath</b><br><sub>cutting line plus clippings</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/mower-shuttle.gif" width="240" alt="Robot mower shuttle"><br><b>shuttle</b><br><sub>drives a row and turns</sub></td>
-</tr>
-<tr>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/mower-sway.gif" width="240" alt="Robot mower sway"><br><b>sway</b><br><sub>the whole icon sways</sub></td>
-<td align="center" valign="top" width="33%"><img src="assets/gallery/mower-returning.gif" width="240" alt="Robot mower returning"><br><b>returning</b><br><sub>back to the dock</sub></td>
-<td width="33%"></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/mower-shuttle.gif" width="140" alt="Robot mower shuttle"><br><sub>shuttle</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/mower-sway.gif" width="140" alt="Robot mower sway"><br><sub>sway</sub></td>
+<td align="center" valign="top" width="25%"><img src="assets/gallery/mower-returning.gif" width="140" alt="Robot mower returning"><br><sub>returning</sub></td>
+<td width="25%"></td>
 </tr>
 </table>
 
-<p><b>Other states:</b> docked · paused · needs attention · unavailable</p>
-<img src="assets/gallery/mower-states.png" width="100%" alt="Robot mower states">
+<p><sub>Other states: docked · paused · needs attention · unavailable</sub></p>
+<img src="assets/gallery/mower-states.png" width="68%" alt="Robot mower states">
 
 </details>
 

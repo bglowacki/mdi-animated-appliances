@@ -4,9 +4,9 @@
 :root{--primary-text-color:#e1e1e1;--secondary-text-color:#9b9b9b;--divider-color:rgba(255,255,255,.12);--card-background-color:#1c1c1c;--error-color:#f44336;--warning-color:#ffa600}
 body{margin:0;background:#111;font-family:Roboto,sans-serif;color:#e1e1e1}
 ha-card{display:block;background:var(--card-background-color);border-radius:12px}
-mdi-animated-card{display:block;height:92px}
-#one{width:300px;padding:0}
-#sheet{display:grid;grid-template-columns:repeat(3,300px);gap:14px 12px;padding:12px;width:max-content}
+mdi-animated-card{display:block;height:148px}
+#one{width:148px;padding:0}
+#sheet{display:grid;grid-template-columns:repeat(6,148px);gap:14px 12px;padding:12px;width:max-content}
 .cell{display:flex;flex-direction:column;gap:4px}
 .cap{font-size:12px;color:#9b9b9b;text-align:center;letter-spacing:.3px}
 </style></head><body><div id="root"></div>
@@ -26,7 +26,7 @@ const RAW = {
 const ROBOT = (a) => a === 'vacuum' || a === 'mower';
 function make(a, variant, logical) {
   const raw = RAW[a][logical];
-  const cfg = { type: 'custom:mdi-animated-card', appliance: a, entity: a === 'dryer' ? 'binary_sensor.x' : 'sensor.x', name: NAMES[a], language: 'en', icon_size: 64 };
+  const cfg = { type: 'custom:mdi-animated-card', appliance: a, entity: a === 'dryer' ? 'binary_sensor.x' : 'sensor.x', name: NAMES[a], language: 'en', icon_size: 100 };
   if (variant) cfg.variant = variant;
   if (a === 'dishwasher' && logical === 'drying') cfg.drying_from_progress = 50;
   if (!ROBOT(a)) { cfg.progress_entity = 'sensor.prog'; cfg.finish_entity = 'sensor.fin'; }
@@ -39,6 +39,9 @@ function make(a, variant, logical) {
   const el = document.createElement('mdi-animated-card');
   el.setConfig(cfg);
   el.hass = { states, locale: { language: 'en' }, language: 'en' };
+  const st = document.createElement('style');
+  st.textContent = '.txt,.bar{display:none!important} .wrap{justify-content:center;padding:0!important;height:100%} .icon{margin:0!important}';
+  el.shadowRoot.appendChild(st);
   return el;
 }
 const root = document.getElementById('root');
@@ -49,6 +52,7 @@ if (q.get('mode') === 'one') {
   window.__card = el;
 } else if (q.get('mode') === 'sheet') {
   const a = q.get('a'); const sheet = document.createElement('div'); sheet.id = 'sheet';
+  sheet.style.gridTemplateColumns = `repeat(${q.get('s').split(',').length},148px)`;
   for (const s of q.get('s').split(',')) {
     const cell = document.createElement('div'); cell.className = 'cell';
     cell.appendChild(make(a, null, s));
