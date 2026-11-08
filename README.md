@@ -1,18 +1,19 @@
 # MDI Animated Appliances
 
 Animated, **Material Design Icon–style** appliance cards for Home Assistant. Pick an entity and the
-icon follows the appliance: water moves in the window while washing, steam rises while drying, a check
-draws itself when the cycle is finished.
+icon follows the appliance: water moves in the window of a dishwasher, the drum of a washing machine
+turns, a tumble dryer glows with moving heat waves, a robot vacuum circles its ring, a robot mower
+spins its wheel – and a check draws itself when the cycle is finished.
 
 ![Preview](assets/preview.gif)
 
 Supported appliances: **dishwasher**, **washer** (washing machine), **dryer** (tumble dryer), **vacuum** (robot vacuum) and **mower** (robot lawn mower). More to come – pick one with the `appliance` option.
 
 * Pure SVG + CSS, no dependencies, no `card-mod`, no extra resources.
-* Uses the real `mdi:dishwasher` outline so it blends in with the rest of your dashboard and theme.
+* Built on the real Material Design Icons outlines (`dishwasher`, `washing-machine`, `tumble-dryer`, `robot-vacuum`, `robot-mower`), so it blends in with the rest of your dashboard and theme.
 * Washing animations – dishwasher: `wave`, `bubbles`, `drops`, `sway`; washer: `tumble` (rotating drum), `bubbles`, `sway`; dryer: `heat` (glowing drum with moving heat waves, default), `tumble` (items orbiting the drum), `sway`.
-* States: washing, spinning (washer), drying, finished, paused, delayed start, error, idle, unavailable.
-* Optional progress bar and finish time.
+* States: washing / cleaning / mowing, spinning (washer), drying, returning (robots), finished, paused, delayed start, error, idle / docked, unavailable.
+* Optional progress bar and finish time for appliances; battery level for robots.
 * Visual editor, English and Polish labels, honours `prefers-reduced-motion`.
 
 ## Installation
@@ -47,8 +48,9 @@ variant: wave
 | `appliance` | `dishwasher` | `dishwasher`, `washer`, `dryer`, `vacuum` or `mower`. |
 | `name` | entity name | Card title. |
 | `variant` | `wave` / `tumble` / `heat` | Dishwasher: `wave`, `bubbles`, `drops`, `sway`. Washer: `tumble`, `bubbles`, `sway`. Dryer: `heat`, `tumble`, `sway`. Vacuum: `clean`, `sway`. Mower: `mow`, `sway`. |
-| `progress_entity` | – | Numeric 0–100 sensor; shows a bar and a percentage. |
-| `finish_entity` | – | Timestamp sensor; shows “until HH:MM”. |
+| `progress_entity` | – | Numeric 0–100 sensor; shows a bar and a percentage (appliances, not robots). |
+| `finish_entity` | – | Timestamp sensor; shows “until HH:MM” (appliances, not robots). |
+| `battery_entity` | `battery_level` attribute | Battery sensor for `vacuum` / `mower`; shows “Battery 78%”. |
 | `drying_from_progress` | – | Show the *drying* animation once progress reaches this % (for integrations that do not report a drying phase). |
 | `state_map` | – | Map raw states to `washing`, `drying`, `finished`, `paused`, `delayed`, `error`, `idle`. |
 | `layout` | `horizontal` | `horizontal` or `vertical`. |
