@@ -116,7 +116,7 @@ Every animation is a seamless loop. Expand an appliance; the name under each ico
 </table>
 
 <p><sub>Other states: docked · paused · needs attention · unavailable</sub></p>
-<img src="assets/gallery/vacuum-states.png" width="68%" alt="Robot vacuum states">
+<img src="assets/gallery/vacuum-states.png" width="100%" alt="Robot vacuum states">
 
 </details>
 
@@ -147,7 +147,7 @@ Every animation is a seamless loop. Expand an appliance; the name under each ico
 </table>
 
 <p><sub>Other states: docked · paused · needs attention · unavailable</sub></p>
-<img src="assets/gallery/mower-states.png" width="68%" alt="Robot mower states">
+<img src="assets/gallery/mower-states.png" width="100%" alt="Robot mower states">
 
 </details>
 
