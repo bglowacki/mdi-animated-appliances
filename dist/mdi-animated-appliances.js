@@ -3,7 +3,7 @@
  * https://github.com/bglowacki/mdi-animated-appliances
  * MIT License. Icon geometry: Material Design Icons by Pictogrammers (Apache-2.0), see NOTICE.
  */
-const VERSION = '0.5.0';
+const VERSION = '0.6.0';
 
 /* ---------- MDI "dishwasher" geometry (split so the drop can be swapped for a check) ---------- */
 const DISHWASHER_FRAME =
@@ -38,8 +38,8 @@ const MOWER_PATH =
 const APPLIANCES = {
   dishwasher: { frame: DISHWASHER_FRAME, drop: DISHWASHER_DROP, window: { x: 6, y: 8, w: 12, h: 12 }, variants: ['wave', 'bubbles', 'drops', 'sway'], defaultVariant: 'wave' },
   dryer: { frame: DRYER_FRAME, waves: DRYER_WAVES, drum: { cx: 12, cy: 14, r: 6 }, variants: ['heat', 'tumble', 'sway'], defaultVariant: 'heat' },
-  vacuum: { variants: ['clean', 'sway', 'scan', 'sonar', 'bounce'], defaultVariant: 'clean' },
-  mower: { variants: ['mow', 'sway', 'grass', 'clippings', 'shuttle'], defaultVariant: 'mow' },
+  vacuum: { variants: ['clean', 'sway', 'scan', 'sonar', 'bounce', 'suction', 'vortex', 'brush', 'bin', 'sparkle', 'mop'], defaultVariant: 'clean' },
+  mower: { variants: ['mow', 'sway', 'grass', 'clippings', 'shuttle', 'cut', 'mulch', 'deck', 'meadow', 'swath'], defaultVariant: 'mow' },
   washer: { frame: WASHER_FRAME, half: WASHER_HALF, drum: { cx: 12, cy: 14, r: 6 }, variants: ['tumble', 'bubbles', 'sway'], defaultVariant: 'tumble' },
 };
 
@@ -265,7 +265,69 @@ function mowerSvg(state, variant, size) {
   </svg>`;
 }
 
+function vacuumExtra(state, variant, size) {
+  const base = vacuumSvg(state, 'x', size).replace(/<circle class="vring[^>]*>/, '');
+  const put = (under, over) => base.replace(/(<svg[^>]*>)/, `$1${under}`).replace('</svg>', `${over}</svg>`);
+  const brown = '#e0b48a';
+  if (variant === 'suction') {
+    const bits = Array.from({ length: 8 }, (_, k) => { const a = k * 45 + 12, c = Math.cos(a * Math.PI / 180), sn = Math.sin(a * Math.PI / 180); return `<circle class="suc" style="--dx:${(-5.2 * c).toFixed(2)}px;--dy:${(-5.2 * sn).toFixed(2)}px;animation-delay:${(k * .225).toFixed(2)}s" cx="${(12 + 11 * c).toFixed(2)}" cy="${(12 + 11 * sn).toFixed(2)}" r="${k % 2 ? 1.15 : 1.6}" fill="${brown}"/>`; }).join('');
+    return put('', bits);
+  }
+  if (variant === 'vortex') {
+    let dd = '';
+    for (let t = 0; t <= 1.0001; t += .02) { const ang = t * 2.4 * Math.PI, rr = 11.2 - t * 5; dd += `${dd ? 'L' : 'M'}${(12 + rr * Math.cos(ang)).toFixed(2)},${(12 + rr * Math.sin(ang)).toFixed(2)}`; }
+    const bit = (i) => `<circle class="vort" style="offset-path:path('${dd}');animation-delay:${(i * .45).toFixed(2)}s" r="${i % 2 ? 1.2 : 1.6}" cx="0" cy="0" fill="${brown}"/>`;
+    return put('', [0, 1, 2, 3].map(bit).join(''));
+  }
+  if (variant === 'brush') {
+    const star = [0, 120, 240].map((a) => `<line x1="0" y1="0" x2="${(2.6 * Math.cos(a * Math.PI / 180)).toFixed(2)}" y2="${(2.6 * Math.sin(a * Math.PI / 180)).toFixed(2)}" stroke="#ff7043" stroke-width="1" stroke-linecap="round"/>`).join('');
+    const bits = [0, 1, 2].map((i) => `<circle class="swept" style="animation-delay:${(i * .6).toFixed(1)}s" cx="5.4" cy="19" r="1.3" fill="${brown}"/>`).join('');
+    return put('', `${bits}<g transform="translate(6.6 16.6)"><g class="brushspin">${star}<circle r=".7" fill="#ff7043"/></g></g>`);
+  }
+  if (variant === 'bin') {
+    return put('', `<defs><clipPath id="binc"><circle cx="12" cy="12" r="5.6"/></clipPath></defs><g clip-path="url(#binc)"><rect class="binfill" x="5" y="7" width="14" height="11" fill="#a9703f"/></g><circle class="binbit" cx="12" cy="3.4" r="1.3" fill="${brown}"/><circle class="binbit b2" cx="9.2" cy="4.2" r="1" fill="${brown}"/><path d="M12,8.3 A1,1 0 1 0 12,10.3 A1,1 0 1 0 12,8.3Z" fill="#1c1c1c" opacity=".9"/>`);
+  }
+  if (variant === 'sparkle') {
+    const star = (x, y, i) => `<path class="spark" style="animation-delay:${(i * .45).toFixed(2)}s;transform-origin:${x}px ${y}px" d="M${x},${y - 2} L${x + .55},${y - .55} L${x + 2},${y} L${x + .55},${y + .55} L${x},${y + 2} L${x - .55},${y + .55} L${x - 2},${y} L${x - .55},${y - .55} Z" fill="#fff7b0"/>`;
+    return put('', `<defs><clipPath id="shn"><circle cx="12" cy="12" r="6"/></clipPath></defs><g clip-path="url(#shn)"><rect class="shine" x="-4" y="-2" width="3.2" height="28" fill="#ffffff" opacity=".9" transform="rotate(25 12 12)"/></g>${star(3.4, 5, 0)}${star(21, 6.4, 1)}${star(19.4, 19.6, 2)}`);
+  }
+  if (variant === 'mop') {
+    return put('', `<defs><clipPath id="mopc"><circle cx="12" cy="12" r="5.6"/></clipPath></defs><g clip-path="url(#mopc)"><g class="mopwave"><path d="M-12,12.6 q3,-2 6,0 t6,0 t6,0 t6,0 t6,0 t6,0 t6,0 V20 H-12Z" fill="#2b86e6" opacity=".9"/></g></g><circle class="mopdrop" cx="9.5" cy="12" r=".6" fill="#8fd0ff"/><circle class="mopdrop d2" cx="14.5" cy="12" r=".6" fill="#8fd0ff"/>`);
+  }
+  return null;
+}
+
+function mowerExtra(state, variant, size) {
+  const base = mowerSvg(state, 'mow', size);
+  const put = (under, over) => base.replace(/(<svg[^>]*>)/, `$1${under}`).replace('</svg>', `${over}</svg>`);
+  const blades = (x0, n, top, fill) => Array.from({ length: n }, (_, i) => `M${x0 + i * 2},23.6 L${x0 + i * 2 + 1},${top} L${x0 + i * 2 + 2},23.6 Z`).join('');
+  const cutScene = () => {
+    const tall = `<defs><clipPath id="ct"><rect x="11.5" y="18" width="12" height="7"/></clipPath><clipPath id="cs"><rect x="0.5" y="18" width="11" height="7"/></clipPath></defs>
+      <g clip-path="url(#ct)"><path class="grass" d="${blades(0, 16, 19.9)}" fill="#4cd08a"/></g><g clip-path="url(#cs)"><path class="grass" d="${blades(0, 16, 22.2)}" fill="#2f9e63"/></g>`;
+    const tips = [[-2.6, 2.4], [-3.4, 3.4], [-1.8, 3.8], [-3, 1.8]].map(([dx, dy], i) => `<path class="tip" style="--dx:${dx}px;--dy:${dy}px;animation-delay:${(i * .25).toFixed(2)}s" d="M10.2,21.4 l2.8,0 l-1.4,-2.8 Z" fill="#caffdf"/>`).join('');
+    return { tall, tips };
+  };
+  const spray = () => [[2.6, 20.2, -4, -3.4, 0], [3.4, 20.6, -5, -2.4, .12], [2.2, 20.9, -3.2, -4, .25], [3.8, 20.3, -5.6, -3.6, .37], [2.8, 20.8, -4.6, -2, .5], [3.2, 20.5, -3.6, -4.4, .62], [2.4, 20.4, -4.2, -1.2, .75], [3, 20.7, -2.6, -3, .87]]
+    .map(([x, y, dx, dy, dl]) => `<rect class="mul" style="--dx:${dx}px;--dy:${dy}px;animation-delay:${dl}s" x="${x}" y="${y}" width="2.6" height="1.3" rx=".6" fill="#caffdf"/>`).join('');
+  if (variant === 'cut') { const c = cutScene(); return put(c.tall, c.tips + '<line class="flash" x1="11.5" y1="19.6" x2="11.5" y2="23.6" stroke="#ffffff" stroke-width=".7"/>'); }
+  if (variant === 'mulch') return put(`<path d="${blades(0, 12, 22.2)}" fill="#2f9e63" transform="translate(0,0)"/>`, spray());
+  if (variant === 'deck') {
+    const bits = [9, 10.8, 12.6, 14.4, 15.6].map((x, i) => `<rect class="suck" style="animation-delay:${(i * .24).toFixed(2)}s" x="${x}" y="22.4" width="2.2" height="1.1" rx=".5" fill="#caffdf"/>`).join('');
+    return put(`<path d="${blades(0, 12, 22.2)}" fill="#2f9e63"/>`, `<line class="deckblade" x1="6.5" y1="20.6" x2="17.5" y2="20.6" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><line class="deckblade b2" x1="8" y1="20.6" x2="16" y2="20.6" stroke="#6ee7a3" stroke-width="1.8" stroke-linecap="round"/>${bits}`);
+  }
+  if (variant === 'meadow') {
+    const tall = (x, h, flower, i) => `<g class="msway" style="transform-origin:${x}px 23.6px;animation-delay:${(i * .15).toFixed(2)}s"><path d="M${x - .6},23.6 L${x},${23.6 - h} L${x + .6},23.6 Z" fill="#4cd08a"/>${flower ? `<circle cx="${x}" cy="${(23.6 - h - .1).toFixed(1)}" r=".8" fill="#ffffff"/><circle cx="${x}" cy="${(23.6 - h - .1).toFixed(1)}" r=".35" fill="#ffd54a"/>` : ''}</g>`;
+    const left = [1.4, 2.6, 3.8, 5.0].map((x, i) => tall(x, 3.4 + (i % 2) * .8, i === 1, i)).join('');
+    const right = [19, 20.2, 21.4, 22.6].map((x, i) => tall(x, 3.4 + (i % 2) * .8, i === 2, i + 4)).join('');
+    return put(`<path d="${blades(6, 6, 22.2)}" fill="#2f9e63"/>${left}${right}`, '');
+  }
+  if (variant === 'swath') { const c = cutScene(); return put(c.tall, c.tips + spray()); }
+  return null;
+}
+
 function iconSvg(appliance, state, variant, size) {
+  if (appliance === 'vacuum' && state === 'washing') { const x = vacuumExtra(state, variant, size); if (x) return x; }
+  if (appliance === 'mower' && state === 'washing') { const x = mowerExtra(state, variant, size); if (x) return x; }
   if (appliance === 'vacuum') return vacuumSvg(state, variant, size);
   if (appliance === 'mower') return mowerSvg(state, variant, size);
   if (appliance === 'dryer') return dryerSvg(state, variant, size);
@@ -355,6 +417,23 @@ ha-card { height: 100%; overflow: hidden; cursor: pointer; }
 .mblade { transform-origin: 12px 21.2px; animation: blade .4s linear infinite; }
 .mowbody.shuttle { animation: shuttle 4s ease-in-out infinite; transform-origin: 12px 12px; }
 .svg { overflow: visible; }
+.tip { transform-box: fill-box; transform-origin: center; animation: tipfall 1s ease-in infinite; }
+.flash { animation: flash .5s steps(2) infinite; }
+.mul { transform-box: fill-box; transform-origin: center; animation: mulch 1s ease-out infinite; }
+.suck { animation: suck .5s ease-in infinite; }
+.deckblade { animation: strobe .2s steps(1) infinite; }
+.deckblade.b2 { animation-delay: .1s; }
+.msway { animation: msway 1s ease-in-out infinite alternate; }
+.suc { animation: suc 1.8s ease-in infinite; }
+.vort { animation: vort 1.8s linear infinite; }
+.brushspin { animation: spin 0.9s linear infinite; }
+.swept { animation: swept 1.8s ease-in infinite; }
+.binfill { transform-box: fill-box; transform-origin: bottom; animation: binfill 3.6s ease-in-out infinite; }
+.binbit { animation: binbit 1.2s ease-in infinite; } .binbit.b2 { animation-delay: .6s; }
+.shine { animation: shine 1.8s linear infinite; }
+.spark { animation: spark 1.8s ease-in-out infinite; transform-box: view-box; }
+.mopwave { animation: wv 1.8s linear infinite; }
+.mopdrop { animation: pulse 1.8s ease-in-out infinite; } .mopdrop.d2 { animation-delay: .9s; }
 .half.tumble { animation: tumble 2.4s ease-in-out infinite alternate; }
 .half.spinfast { animation: spin 0.45s linear infinite; }
 .ring { transform-origin: 12px 14px; animation: spin 0.9s linear infinite; }
@@ -366,6 +445,19 @@ ha-card { height: 100%; overflow: hidden; cursor: pointer; }
 @keyframes fleck { 0% { transform: translate(0,0) rotate(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) rotate(200deg); opacity: 0; } }
 @keyframes blade { 0%,100% { transform: scaleX(1); } 50% { transform: scaleX(.15); } }
 @keyframes shuttle { 0% { transform: translateX(-.9px) scaleX(1); } 45% { transform: translateX(.9px) scaleX(1); } 50% { transform: translateX(.9px) scaleX(-1); } 95% { transform: translateX(-.9px) scaleX(-1); } 100% { transform: translateX(-.9px) scaleX(1); } }
+@keyframes tipfall { 0% { transform: translate(0,0) rotate(0); opacity: 0; } 12% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) rotate(260deg); opacity: 0; } }
+@keyframes flash { 0% { opacity: .9; } 100% { opacity: .1; } }
+@keyframes mulch { 0% { transform: translate(0,0) rotate(0); opacity: 0; } 12% { opacity: 1; } 50% { transform: translate(calc(var(--dx) * .65), var(--dy)) rotate(120deg); } 100% { transform: translate(var(--dx), calc(var(--dy) * -.2)) rotate(300deg); opacity: 0; } }
+@keyframes suck { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-2.6px); opacity: 0; } }
+@keyframes strobe { 0% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes msway { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
+@keyframes suc { 0% { transform: translate(0,0) scale(1); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) scale(.3); opacity: 0; } }
+@keyframes vort { 0% { offset-distance: 0%; opacity: 0; transform: scale(1); } 12% { opacity: 1; } 88% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; transform: scale(.35); } }
+@keyframes swept { 0% { transform: translate(0,0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translate(5px,-2.6px) scale(.4); opacity: 0; } }
+@keyframes binfill { 0% { transform: scaleY(0); opacity: 1; } 75% { transform: scaleY(.6); opacity: 1; } 90%, 100% { transform: scaleY(.6); opacity: 0; } }
+@keyframes binbit { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(4.4px); opacity: 0; } }
+@keyframes shine { 0% { transform: translateX(0); } 100% { transform: translateX(16px); } }
+@keyframes spark { 0%, 100% { transform: scale(0); opacity: 0; } 50% { transform: scale(1); opacity: 1; } }
 @keyframes bob { from { transform: translateY(0); } to { transform: translateY(-.35px); } }
 @keyframes pulse2 { 50% { opacity: .82; } }
 @keyframes glowslow { 50% { opacity: .35; } }
