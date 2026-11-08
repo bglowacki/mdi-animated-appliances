@@ -3,7 +3,7 @@
  * https://github.com/bglowacki/mdi-animated-appliances
  * MIT License. Icon geometry: Material Design Icons by Pictogrammers (Apache-2.0), see NOTICE.
  */
-const VERSION = '0.3.0';
+const VERSION = '0.3.1';
 
 /* ---------- MDI "dishwasher" geometry (split so the drop can be swapped for a check) ---------- */
 const DISHWASHER_FRAME =
@@ -243,18 +243,17 @@ ha-card { height: 100%; overflow: hidden; cursor: pointer; }
 .alert { animation: pulse 1.4s ease-in-out infinite; }
 .half { transform-origin: 12px 14px; }
 .glow { animation: glow 2.4s ease-in-out infinite; }
-.orbit { transform-origin: 12px 14px; animation: tumble 3s ease-in-out infinite alternate; }
+.orbit { transform-origin: 12px 14px; animation: spin 4s linear infinite; }
 .drop.hot { fill: #ffb454; animation: heatwave 1.8s ease-in-out infinite; }
 .drop.dwave1 { animation-delay: .6s; }
 .svg.s-washing .drop.hot, .svg.s-drying .drop.hot { fill: #ffb454; }
-.half.tumble { animation: tumble 2.4s ease-in-out infinite alternate; }
+.half.tumble { animation: spin 3s linear infinite; }
 .half.spinfast { animation: spin 0.45s linear infinite; }
 .ring { transform-origin: 12px 14px; animation: spin 0.9s linear infinite; }
 .wm-water { animation: ww 1.6s linear infinite; }
 
 @keyframes glow { 50% { opacity: .08; } }
 @keyframes heatwave { 0%, 100% { transform: translateY(1.1px); opacity: .55; } 50% { transform: translateY(-.9px); opacity: 1; } }
-@keyframes tumble { from { transform: rotate(-70deg); } to { transform: rotate(200deg); } }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes ww { from { transform: translateX(0); } to { transform: translateX(6px); } }
 @keyframes wv { from { transform: translateX(0); } to { transform: translateX(12px); } }
