@@ -3,7 +3,7 @@
  * https://github.com/bglowacki/mdi-animated-appliances
  * MIT License. Icon geometry: Material Design Icons by Pictogrammers (Apache-2.0), see NOTICE.
  */
-const VERSION = '0.4.1';
+const VERSION = '0.4.2';
 
 /* ---------- MDI "dishwasher" geometry (split so the drop can be swapped for a check) ---------- */
 const DISHWASHER_FRAME =
@@ -299,17 +299,17 @@ ha-card { height: 100%; overflow: hidden; cursor: pointer; }
 
 .wave1 { animation: wv 1.4s linear infinite; }
 .wave2 { animation: wv2 2.1s linear infinite; }
-.bub { animation: rise 2.2s ease-in infinite; }
-.bub1 { animation-delay: .4s; } .bub2 { animation-delay: 1s; } .bub3 { animation-delay: .2s; animation-duration: 2.6s; } .bub4 { animation-delay: 1.4s; } .bub5 { animation-delay: .8s; }
-.tint { animation: pulse 2s ease-in-out infinite; }
+.bub { animation: rise 2.4s ease-in infinite; }
+.bub1 { animation-delay: .4s; } .bub2 { animation-delay: 1s; } .bub3 { animation-delay: .2s; } .bub4 { animation-delay: 1.4s; } .bub5 { animation-delay: .8s; }
+.tint { animation: pulse 2.4s ease-in-out infinite; }
 .drp { animation: fall .9s linear infinite; }
 .drp1 { animation-delay: .15s; } .drp2 { animation-delay: .3s; } .drp3 { animation-delay: .45s; } .drp4 { animation-delay: .6s; } .drp5 { animation-delay: .75s; } .drp6 { animation-delay: .2s; } .drp7 { animation-delay: .5s; } .drp8 { animation-delay: .7s; }
-.steam { animation: steam 2s ease-out infinite; } .steam1 { animation-delay: .6s; } .steam2 { animation-delay: 1.2s; }
+.steam { animation: steam 2.4s ease-out infinite; } .steam1 { animation-delay: .6s; } .steam2 { animation-delay: 1.2s; }
 .check { stroke-dasharray: 20 20; animation: draw 2.4s ease-out infinite; }
 .alert { animation: pulse 1.4s ease-in-out infinite; }
 .half { transform-origin: 12px 14px; }
 .glow { animation: glow 2.4s ease-in-out infinite; }
-.orbit { transform-origin: 12px 14px; animation: tumble 3s ease-in-out infinite alternate; }
+.orbit { transform-origin: 12px 14px; animation: tumble 3.6s ease-in-out infinite alternate; }
 .drop.hot { fill: #ffb454; animation: heatwave 1.8s ease-in-out infinite; }
 .drop.dwave1 { animation-delay: .6s; }
 .svg.s-washing .drop.hot, .svg.s-drying .drop.hot { fill: #ffb454; }

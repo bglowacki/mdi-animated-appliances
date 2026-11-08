@@ -18,13 +18,69 @@ Supported appliances: **dishwasher**, **washer** (washing machine), **dryer** (t
 
 ## Gallery
 
-Each appliance has its own animation (seamless loops, shown while running).
+Every animation is a seamless loop. Static states are shown under each appliance.
 
-| | |
-|---|---|
-| **Dishwasher** – `wave`<br>![Dishwasher](assets/dishwasher.gif) | **Washing machine** – `tumble`<br>![Washing machine](assets/washer.gif) |
-| **Tumble dryer** – `heat`<br>![Tumble dryer](assets/dryer.gif) | **Robot vacuum** – `clean`<br>![Robot vacuum](assets/vacuum.gif) |
-| **Robot mower** – `mow`<br>![Robot mower](assets/mower.gif) | |
+### Dishwasher
+
+`appliance: dishwasher`
+
+| | | |
+|---|---|---|
+| <b>wave (default)</b><br><sub>washing: water moving in the window</sub><br><img src="assets/gallery/dishwasher-wave.gif" width="270" alt="Dishwasher wave"> | <b>bubbles</b><br><sub>washing: bubbles rising</sub><br><img src="assets/gallery/dishwasher-bubbles.gif" width="270" alt="Dishwasher bubbles"> | <b>drops</b><br><sub>washing: falling drops</sub><br><img src="assets/gallery/dishwasher-drops.gif" width="270" alt="Dishwasher drops"> |
+| <b>sway</b><br><sub>washing: the whole icon sways</sub><br><img src="assets/gallery/dishwasher-sway.gif" width="270" alt="Dishwasher sway"> | <b>drying</b><br><sub>drying phase (`drying_from_progress`): steam</sub><br><img src="assets/gallery/dishwasher-drying.gif" width="270" alt="Dishwasher drying"> |  |
+
+**Other states:** finished · paused · delayed start · needs attention · idle · unavailable
+
+<img src="assets/gallery/dishwasher-states.png" width="100%" alt="Dishwasher states">
+
+### Washing machine
+
+`appliance: washer`
+
+| | | |
+|---|---|---|
+| <b>tumble (default)</b><br><sub>wash / rinse: drum swings, water sloshes</sub><br><img src="assets/gallery/washer-tumble.gif" width="270" alt="Washing machine tumble"> | <b>bubbles</b><br><sub>wash / rinse: bubbles rising</sub><br><img src="assets/gallery/washer-bubbles.gif" width="270" alt="Washing machine bubbles"> | <b>sway</b><br><sub>wash / rinse: the whole icon sways</sub><br><img src="assets/gallery/washer-sway.gif" width="270" alt="Washing machine sway"> |
+| <b>spinning</b><br><sub>spin: drum spins fast</sub><br><img src="assets/gallery/washer-spinning.gif" width="270" alt="Washing machine spinning"> | <b>drying</b><br><sub>drying: steam</sub><br><img src="assets/gallery/washer-drying.gif" width="270" alt="Washing machine drying"> |  |
+
+**Other states:** finished · paused · delayed start · needs attention · idle · unavailable
+
+<img src="assets/gallery/washer-states.png" width="100%" alt="Washing machine states">
+
+### Tumble dryer
+
+`appliance: dryer`
+
+| | | |
+|---|---|---|
+| <b>heat (default)</b><br><sub>glowing drum, moving heat waves</sub><br><img src="assets/gallery/dryer-heat.gif" width="270" alt="Tumble dryer heat"> | <b>tumble</b><br><sub>items orbiting the drum</sub><br><img src="assets/gallery/dryer-tumble.gif" width="270" alt="Tumble dryer tumble"> | <b>sway</b><br><sub>the whole icon sways</sub><br><img src="assets/gallery/dryer-sway.gif" width="270" alt="Tumble dryer sway"> |
+
+**Other states:** finished · paused · delayed start · needs attention · idle · unavailable
+
+<img src="assets/gallery/dryer-states.png" width="100%" alt="Tumble dryer states">
+
+### Robot vacuum
+
+`appliance: vacuum`
+
+| | | |
+|---|---|---|
+| <b>clean (default)</b><br><sub>cleaning: arc circles the ring</sub><br><img src="assets/gallery/vacuum-clean.gif" width="270" alt="Robot vacuum clean"> | <b>sway</b><br><sub>cleaning: the whole icon sways</sub><br><img src="assets/gallery/vacuum-sway.gif" width="270" alt="Robot vacuum sway"> | <b>returning</b><br><sub>returning to the dock: amber, slower, reversed</sub><br><img src="assets/gallery/vacuum-returning.gif" width="270" alt="Robot vacuum returning"> |
+
+**Other states:** docked · paused · needs attention · unavailable
+
+<img src="assets/gallery/vacuum-states.png" width="100%" alt="Robot vacuum states">
+
+### Robot mower
+
+`appliance: mower`
+
+| | | |
+|---|---|---|
+| <b>mow (default)</b><br><sub>mowing: wheel turns, light pulses</sub><br><img src="assets/gallery/mower-mow.gif" width="270" alt="Robot mower mow"> | <b>sway</b><br><sub>mowing: the whole icon sways</sub><br><img src="assets/gallery/mower-sway.gif" width="270" alt="Robot mower sway"> | <b>returning</b><br><sub>returning to the dock: amber</sub><br><img src="assets/gallery/mower-returning.gif" width="270" alt="Robot mower returning"> |
+
+**Other states:** docked · paused · needs attention · unavailable
+
+<img src="assets/gallery/mower-states.png" width="100%" alt="Robot mower states">
 
 ## Installation
 
