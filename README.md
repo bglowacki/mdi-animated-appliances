@@ -11,7 +11,7 @@ Supported appliances: **dishwasher**, **washer** (washing machine), **dryer** (t
 
 * Pure SVG + CSS, no dependencies, no `card-mod`, no extra resources.
 * Built on the real Material Design Icons outlines (`dishwasher`, `washing-machine`, `tumble-dryer`, `robot-vacuum`, `robot-mower`), so it blends in with the rest of your dashboard and theme.
-* Washing animations – dishwasher: `wave`, `bubbles`, `drops`, `sway`; washer: `tumble` (rotating drum), `bubbles`, `sway`; dryer: `heat` (glowing drum with moving heat waves, default), `tumble` (items orbiting the drum), `sway`.
+* Washing animations – dishwasher: `wave`, `bubbles`, `drops`, `sway`; washer: `tumble` (rotating drum), `bubbles`, `sway`; dryer: `heat` (glowing drum with moving heat waves, default), `tumble` (items orbiting the drum), `sway`; vacuum: `clean` (arc circling the ring, default), `scan` (radar sweep), `sonar` (expanding rings), `bounce` (body roaming inside the ring), `sway`; mower: `mow` (turning wheel, default), `grass` (cutting line over grass), `clippings` (spinning blade and flying clippings), `shuttle` (drives a row and turns), `sway`.
 * States: washing / cleaning / mowing, spinning (washer), drying, returning (robots), finished, paused, delayed start, error, idle / docked, unavailable.
 * Optional progress bar and finish time for appliances; battery level for robots.
 * Visual editor, English and Polish labels, honours `prefers-reduced-motion`.
@@ -64,7 +64,8 @@ Every animation is a seamless loop. Static states are shown under each appliance
 
 | | | |
 |---|---|---|
-| <b>clean (default)</b><br><sub>cleaning: arc circles the ring</sub><br><img src="assets/gallery/vacuum-clean.gif" width="270" alt="Robot vacuum clean"> | <b>sway</b><br><sub>cleaning: the whole icon sways</sub><br><img src="assets/gallery/vacuum-sway.gif" width="270" alt="Robot vacuum sway"> | <b>returning</b><br><sub>returning to the dock: amber, slower, reversed</sub><br><img src="assets/gallery/vacuum-returning.gif" width="270" alt="Robot vacuum returning"> |
+| <b>clean (default)</b><br><sub>cleaning: arc circles the ring</sub><br><img src="assets/gallery/vacuum-clean.gif" width="270" alt="Robot vacuum clean"> | <b>scan</b><br><sub>cleaning: radar sweep</sub><br><img src="assets/gallery/vacuum-scan.gif" width="270" alt="Robot vacuum scan"> | <b>sonar</b><br><sub>cleaning: expanding rings</sub><br><img src="assets/gallery/vacuum-sonar.gif" width="270" alt="Robot vacuum sonar"> |
+| <b>bounce</b><br><sub>cleaning: body roams inside the ring</sub><br><img src="assets/gallery/vacuum-bounce.gif" width="270" alt="Robot vacuum bounce"> | <b>sway</b><br><sub>cleaning: the whole icon sways</sub><br><img src="assets/gallery/vacuum-sway.gif" width="270" alt="Robot vacuum sway"> | <b>returning</b><br><sub>returning to the dock: amber, slower, reversed</sub><br><img src="assets/gallery/vacuum-returning.gif" width="270" alt="Robot vacuum returning"> |
 
 **Other states:** docked · paused · needs attention · unavailable
 
@@ -76,7 +77,8 @@ Every animation is a seamless loop. Static states are shown under each appliance
 
 | | | |
 |---|---|---|
-| <b>mow (default)</b><br><sub>mowing: wheel turns, light pulses</sub><br><img src="assets/gallery/mower-mow.gif" width="270" alt="Robot mower mow"> | <b>sway</b><br><sub>mowing: the whole icon sways</sub><br><img src="assets/gallery/mower-sway.gif" width="270" alt="Robot mower sway"> | <b>returning</b><br><sub>returning to the dock: amber</sub><br><img src="assets/gallery/mower-returning.gif" width="270" alt="Robot mower returning"> |
+| <b>mow (default)</b><br><sub>mowing: wheel turns, light pulses</sub><br><img src="assets/gallery/mower-mow.gif" width="270" alt="Robot mower mow"> | <b>grass</b><br><sub>mowing: cutting line over grass</sub><br><img src="assets/gallery/mower-grass.gif" width="270" alt="Robot mower grass"> | <b>clippings</b><br><sub>mowing: spinning blade, flying clippings</sub><br><img src="assets/gallery/mower-clippings.gif" width="270" alt="Robot mower clippings"> |
+| <b>shuttle</b><br><sub>mowing: drives a row and turns</sub><br><img src="assets/gallery/mower-shuttle.gif" width="270" alt="Robot mower shuttle"> | <b>sway</b><br><sub>mowing: the whole icon sways</sub><br><img src="assets/gallery/mower-sway.gif" width="270" alt="Robot mower sway"> | <b>returning</b><br><sub>returning to the dock: amber</sub><br><img src="assets/gallery/mower-returning.gif" width="270" alt="Robot mower returning"> |
 
 **Other states:** docked · paused · needs attention · unavailable
 
@@ -113,7 +115,7 @@ variant: wave
 | `entity` | – | **Required.** Entity carrying the appliance status (see *Supported entities*). |
 | `appliance` | `dishwasher` | `dishwasher`, `washer`, `dryer`, `vacuum` or `mower`. |
 | `name` | entity name | Card title. |
-| `variant` | `wave` / `tumble` / `heat` | Dishwasher: `wave`, `bubbles`, `drops`, `sway`. Washer: `tumble`, `bubbles`, `sway`. Dryer: `heat`, `tumble`, `sway`. Vacuum: `clean`, `sway`. Mower: `mow`, `sway`. |
+| `variant` | `wave` / `tumble` / `heat` | Dishwasher: `wave`, `bubbles`, `drops`, `sway`. Washer: `tumble`, `bubbles`, `sway`. Dryer: `heat`, `tumble`, `sway`. Vacuum: `clean`, `scan`, `sonar`, `bounce`, `sway`. Mower: `mow`, `grass`, `clippings`, `shuttle`, `sway`. |
 | `progress_entity` | – | Numeric 0–100 sensor; shows a bar and a percentage (appliances, not robots). |
 | `finish_entity` | – | Timestamp sensor; shows “until HH:MM” (appliances, not robots). |
 | `battery_entity` | `battery_level` attribute | Battery sensor for `vacuum` / `mower`; shows “Battery 78%”. |

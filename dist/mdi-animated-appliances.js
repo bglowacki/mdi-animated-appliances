@@ -3,7 +3,7 @@
  * https://github.com/bglowacki/mdi-animated-appliances
  * MIT License. Icon geometry: Material Design Icons by Pictogrammers (Apache-2.0), see NOTICE.
  */
-const VERSION = '0.4.2';
+const VERSION = '0.5.0';
 
 /* ---------- MDI "dishwasher" geometry (split so the drop can be swapped for a check) ---------- */
 const DISHWASHER_FRAME =
@@ -38,8 +38,8 @@ const MOWER_PATH =
 const APPLIANCES = {
   dishwasher: { frame: DISHWASHER_FRAME, drop: DISHWASHER_DROP, window: { x: 6, y: 8, w: 12, h: 12 }, variants: ['wave', 'bubbles', 'drops', 'sway'], defaultVariant: 'wave' },
   dryer: { frame: DRYER_FRAME, waves: DRYER_WAVES, drum: { cx: 12, cy: 14, r: 6 }, variants: ['heat', 'tumble', 'sway'], defaultVariant: 'heat' },
-  vacuum: { variants: ['clean', 'sway'], defaultVariant: 'clean' },
-  mower: { variants: ['mow', 'sway'], defaultVariant: 'mow' },
+  vacuum: { variants: ['clean', 'sway', 'scan', 'sonar', 'bounce'], defaultVariant: 'clean' },
+  mower: { variants: ['mow', 'sway', 'grass', 'clippings', 'shuttle'], defaultVariant: 'mow' },
   washer: { frame: WASHER_FRAME, half: WASHER_HALF, drum: { cx: 12, cy: 14, r: 6 }, variants: ['tumble', 'bubbles', 'sway'], defaultVariant: 'tumble' },
 };
 
@@ -199,7 +199,14 @@ function vacuumSvg(state, variant, size) {
   let arc = '';
   let overlay = '';
   if (running) {
-    arc = `<circle class="${warm ? 'vring slow rev' : 'vring'}" cx="12" cy="12" r="9" fill="none" stroke="${warm ? '#ffb454' : '#3b9cff'}" stroke-width="1.7" stroke-dasharray="17 40" stroke-linecap="round"/>`;
+    if (state === 'washing' && variant === 'scan') {
+      const wedge = (a0, a1, op) => { const r = 10, p = (a) => `${(12 + r * Math.cos(a * Math.PI / 180)).toFixed(2)},${(12 + r * Math.sin(a * Math.PI / 180)).toFixed(2)}`; return `<path d="M12,12 L${p(a0)} A${r},${r} 0 0,1 ${p(a1)} Z" fill="#8fd0ff" opacity="${op}"/>`; };
+      arc = `<g class="vscan">${wedge(-48, -36, .12)}${wedge(-36, -24, .26)}${wedge(-24, -12, .45)}${wedge(-12, 0, .7)}<path d="M12,12 L22,12" stroke="#bfe6ff" stroke-width=".7" stroke-linecap="round"/></g>`;
+    } else if (state === 'washing' && variant === 'sonar') {
+      arc = '<circle class="vsonar" cx="12" cy="12" r="6" fill="none" stroke="#8fd0ff" stroke-width=".7"/><circle class="vsonar s2" cx="12" cy="12" r="6" fill="none" stroke="#8fd0ff" stroke-width=".7"/>';
+    } else if (state === 'washing' && variant === 'bounce') {
+      arc = '';
+    } else arc = `<circle class="${warm ? 'vring slow rev' : 'vring'}" cx="12" cy="12" r="9" fill="none" stroke="${warm ? '#ffb454' : '#3b9cff'}" stroke-width="1.7" stroke-dasharray="17 40" stroke-linecap="round"/>`;
   } else if (state === 'error') {
     overlay = '<path d="M12,10.2 V13 M12,14.5 V14.6" fill="none" stroke="var(--card-background-color,#1c1c1c)" stroke-width="1.4" stroke-linecap="round"/>';
   } else if (state === 'paused') {
@@ -207,8 +214,9 @@ function vacuumSvg(state, variant, size) {
   }
   return `<svg class="svg s-${state}${swayClass}" viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true">
     <path class="frame" d="${VACUUM_RING}" fill-rule="evenodd"/>
-    ${arc}
-    <path class="frame vbody" d="${state === 'error' || state === 'paused' ? VACUUM_BODY_SOLID : VACUUM_BODY}" fill-rule="evenodd"/>
+    ${state === 'washing' && variant === 'scan' ? '' : arc}
+    <g class="${state === 'washing' && variant === 'bounce' ? 'vbounce' : ''}"><path class="frame vbody" d="${state === 'error' || state === 'paused' ? VACUUM_BODY_SOLID : VACUUM_BODY}" fill-rule="evenodd"/></g>
+    ${state === 'washing' && variant === 'scan' ? arc : ''}
     ${overlay}
   </svg>`;
 }
@@ -233,13 +241,27 @@ function mowerSvg(state, variant, size) {
     light = '<path class="blink slowglow" d="M15,10 V12 H20.25 C19.92,11.27 19.5,10.6 19,10 Z" fill="#4cd08a"/>';
   }
   const bob = running ? ' bob' : '';
+  let under = '';
+  let flecks = '';
+  if (state === 'washing' && variant === 'grass') {
+    const tall = Array.from({ length: 14 }, (_, i) => `M${i * 2},23.4 L${i * 2 + 1},19.6 L${i * 2 + 2},23.4 Z`).join('');
+    const stub = Array.from({ length: 14 }, (_, i) => `M${i * 2},23.4 L${i * 2 + 1},22.2 L${i * 2 + 2},23.4 Z`).join('');
+    under = `<defs><clipPath id="gt"><rect x="14.5" y="18" width="8.5" height="7"/></clipPath><clipPath id="gs"><rect x="1" y="18" width="13.5" height="7"/></clipPath></defs>
+      <g clip-path="url(#gt)"><path class="grass" d="${tall}" fill="#4cd08a"/></g><g clip-path="url(#gs)"><path class="grass" d="${stub}" fill="#2f9e63"/></g>`;
+  } else if (state === 'washing' && variant === 'clippings') {
+    under = '<line class="mblade" x1="8" y1="21.2" x2="16" y2="21.2" stroke="#c9f7dc" stroke-width="1.2" stroke-linecap="round"/>';
+    flecks = [[2.6, 19.7, -3, -4.2], [3.4, 19.9, -4, -2.8], [1.8, 19.8, -2.2, -5], [4.2, 19.7, -4.6, -3.6]].map(([x, y, dx, dy], i) => `<rect class="fleck" style="--dx:${dx}px;--dy:${dy}px;animation-delay:${(i * 0.3).toFixed(1)}s" x="${x}" y="${y}" width="1.1" height=".6" rx=".3" fill="#7be0a4"/>`).join('');
+  }
+  const mcls = running && variant === 'shuttle' ? ' shuttle' : bob;
   return `<svg class="svg s-${state}${swayClass}" viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true">
-    <g class="mowbody${bob}">
+    ${under}
+    <g class="mowbody${mcls}">
       ${wheel}
       <path class="frame" d="${MOWER_PATH}" fill-rule="evenodd"/>
       ${light}
       ${overlay}
     </g>
+    ${flecks}
   </svg>`;
 }
 
@@ -324,11 +346,26 @@ ha-card { height: 100%; overflow: hidden; cursor: pointer; }
 .spokes { transform-origin: 6px 14px; animation: spin 1s linear infinite; }
 .blink { animation: pulse 2s ease-in-out infinite; }
 .mowbody.bob { animation: bob .5s ease-in-out infinite alternate; }
+.vscan { transform-origin: 12px 12px; animation: spin 1.8s linear infinite; }
+.vsonar { transform-origin: 12px 12px; animation: sonar 1.8s ease-out infinite; }
+.vsonar.s2 { animation-delay: .9s; }
+.vbounce { animation: bounce 3.6s ease-in-out infinite; }
+.grass { animation: grassrun .5s linear infinite; }
+.fleck { transform-box: fill-box; transform-origin: center; animation: fleck 1s ease-out infinite; }
+.mblade { transform-origin: 12px 21.2px; animation: blade .4s linear infinite; }
+.mowbody.shuttle { animation: shuttle 4s ease-in-out infinite; transform-origin: 12px 12px; }
+.svg { overflow: visible; }
 .half.tumble { animation: tumble 2.4s ease-in-out infinite alternate; }
 .half.spinfast { animation: spin 0.45s linear infinite; }
 .ring { transform-origin: 12px 14px; animation: spin 0.9s linear infinite; }
 .wm-water { animation: ww 1.6s linear infinite; }
 
+@keyframes sonar { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(1.38); opacity: 0; } }
+@keyframes bounce { 0%,100% { transform: translate(-1px,-1px); } 25% { transform: translate(1.1px,-.4px); } 50% { transform: translate(.5px,1.1px); } 75% { transform: translate(-1.1px,.5px); } }
+@keyframes grassrun { to { transform: translateX(-2px); } }
+@keyframes fleck { 0% { transform: translate(0,0) rotate(0); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) rotate(200deg); opacity: 0; } }
+@keyframes blade { 0%,100% { transform: scaleX(1); } 50% { transform: scaleX(.15); } }
+@keyframes shuttle { 0% { transform: translateX(-.9px) scaleX(1); } 45% { transform: translateX(.9px) scaleX(1); } 50% { transform: translateX(.9px) scaleX(-1); } 95% { transform: translateX(-.9px) scaleX(-1); } 100% { transform: translateX(-.9px) scaleX(1); } }
 @keyframes bob { from { transform: translateY(0); } to { transform: translateY(-.35px); } }
 @keyframes pulse2 { 50% { opacity: .82; } }
 @keyframes glowslow { 50% { opacity: .35; } }
