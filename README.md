@@ -12,6 +12,7 @@ Supported appliances: **dishwasher**, **washer** (washing machine), **dryer** (t
 * Pure SVG + CSS, no dependencies, no `card-mod`, no extra resources.
 * Built on the real Material Design Icons outlines (`dishwasher`, `washing-machine`, `tumble-dryer`, `robot-vacuum`, `robot-mower`), so it blends in with the rest of your dashboard and theme.
 * 5 appliances with 3–12 animations each, all shown in the [Gallery](#gallery); pick one with `variant`.
+* **Rules**: map any entity state or attribute to a state, an animation and a label, so the card follows any device ([Rules](#rules-map-states-to-animations)).
 * States: washing / cleaning / mowing, spinning (washer), drying, returning (robots), finished, paused, delayed start, error, idle / docked, unavailable.
 * Optional progress bar and finish time for appliances; battery level for robots.
 * Visual editor, English and Polish labels, honours `prefers-reduced-motion`.
