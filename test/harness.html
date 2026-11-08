@@ -30,6 +30,15 @@ const cases = [
   ['error', {}, 'actionrequired'],
   ['unavailable', {}, 'unavailable'],
   ['vertical', { layout: 'vertical' }, 'run'],
+  ['washer / tumble', { appliance: 'washer', name: 'Pralka' }, 'wash'],
+  ['washer / bubbles', { appliance: 'washer', variant: 'bubbles', name: 'Pralka' }, 'rinse'],
+  ['washer / spinning', { appliance: 'washer', name: 'Pralka' }, 'spin'],
+  ['washer / drying', { appliance: 'washer', name: 'Pralka' }, 'drying'],
+  ['washer / finished', { appliance: 'washer', name: 'Pralka' }, 'finish'],
+  ['washer / idle', { appliance: 'washer', name: 'Pralka' }, 'none'],
+  ['washer / paused', { appliance: 'washer', name: 'Pralka' }, 'pause'],
+  ['washer / error', { appliance: 'washer', name: 'Pralka' }, 'error'],
+  ['washer / delayed', { appliance: 'washer', name: 'Pralka' }, 'delay_wash'],
 ];
 const grid = document.getElementById('grid');
 window.__cards = [];

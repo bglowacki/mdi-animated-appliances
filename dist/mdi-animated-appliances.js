@@ -3,7 +3,7 @@
  * https://github.com/bglowacki/mdi-animated-appliances
  * MIT License. Icon geometry: Material Design Icons by Pictogrammers (Apache-2.0), see NOTICE.
  */
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 /* ---------- MDI "dishwasher" geometry (split so the drop can be swapped for a check) ---------- */
 const DISHWASHER_FRAME =
@@ -11,27 +11,35 @@ const DISHWASHER_FRAME =
 const DISHWASHER_DROP =
   'M14.67,15.33C14.69,16.03 14.41,16.71 13.91,17.21C12.86,18.26 11.15,18.27 10.09,17.21C9.59,16.71 9.31,16.03 9.33,15.33C9.4,14.62 9.63,13.94 10,13.33C10.37,12.5 10.81,11.73 11.33,11L12,10C13.79,12.59 14.67,14.36 14.67,15.33';
 
+/* MDI "washing-machine": body with the drum cut out, plus the half-disc that sits inside the drum */
+const WASHER_FRAME =
+  'M6,2H18A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2M7,4A1,1 0 0,0 6,5A1,1 0 0,0 7,6A1,1 0 0,0 8,5A1,1 0 0,0 7,4M10,4A1,1 0 0,0 9,5A1,1 0 0,0 10,6A1,1 0 0,0 11,5A1,1 0 0,0 10,4M12,8A6,6 0 0,0 6,14A6,6 0 0,0 12,20A6,6 0 0,0 18,14A6,6 0 0,0 12,8Z';
+const WASHER_HALF =
+  'M14.83,11.17C16.39,12.73 16.39,15.27 14.83,16.83C13.27,18.39 10.73,18.39 9.17,16.83L14.83,11.17';
+
 const APPLIANCES = {
-  dishwasher: { frame: DISHWASHER_FRAME, drop: DISHWASHER_DROP, window: { x: 6, y: 8, w: 12, h: 12 } },
+  dishwasher: { frame: DISHWASHER_FRAME, drop: DISHWASHER_DROP, window: { x: 6, y: 8, w: 12, h: 12 }, variants: ['wave', 'bubbles', 'drops', 'sway'], defaultVariant: 'wave' },
+  washer: { frame: WASHER_FRAME, half: WASHER_HALF, drum: { cx: 12, cy: 14, r: 6 }, variants: ['tumble', 'bubbles', 'sway'], defaultVariant: 'tumble' },
 };
 
-const VARIANTS = ['wave', 'bubbles', 'drops', 'sway'];
+const VARIANTS = Array.from(new Set(Object.values(APPLIANCES).flatMap((a) => a.variants)));
 
 /* ---------- state normalisation ---------- */
 const STATE_WORDS = {
-  washing: ['run', 'running', 'washing', 'wash', 'main_wash', 'mainwash', 'prewash', 'pre_wash', 'pre-wash', 'rinse', 'rinsing', 'in_progress', 'active'],
-  drying: ['dry', 'drying', 'final_dry'],
+  washing: ['run', 'running', 'washing', 'wash', 'main_wash', 'mainwash', 'prewash', 'pre_wash', 'pre-wash', 'rinse', 'rinsing', 'in_progress', 'active', 'ai_wash', 'ai_rinse', 'air_wash', 'weight_sensing', 'soak', 'soaking', 'filling'],
+  spinning: ['spin', 'spinning', 'ai_spin', 'draining'],
+  drying: ['dry', 'drying', 'final_dry', 'cooling', 'wrinkle_prevent'],
   finished: ['finished', 'finish', 'end', 'ended', 'complete', 'completed', 'done', 'end_of_cycle'],
   paused: ['pause', 'paused'],
-  delayed: ['delayedstart', 'delayed_start', 'delayed', 'scheduled'],
+  delayed: ['delayedstart', 'delayed_start', 'delayed', 'delay_wash', 'scheduled'],
   error: ['error', 'actionrequired', 'action_required', 'aborting', 'fault', 'alarm'],
-  idle: ['inactive', 'ready', 'idle', 'off', 'standby', 'none', 'initial', 'power_off', 'closed'],
+  idle: ['inactive', 'ready', 'idle', 'off', 'standby', 'none', 'initial', 'power_off', 'closed', 'stop', 'stopped', 'freeze_protection'],
 };
 const SWITCH_DOMAINS = ['switch', 'input_boolean', 'binary_sensor', 'fan', 'light'];
 
 const LABELS = {
-  en: { washing: 'Washing', drying: 'Drying', finished: 'Finished', paused: 'Paused', delayed: 'Delayed start', error: 'Needs attention', idle: 'Idle', unavailable: 'Unavailable', until: 'until', dishwasher: 'Dishwasher' },
-  pl: { washing: 'Mycie', drying: 'Suszenie', finished: 'Zakończono', paused: 'Wstrzymano', delayed: 'Opóźniony start', error: 'Wymaga uwagi', idle: 'Gotowa', unavailable: 'Niedostępna', until: 'do', dishwasher: 'Zmywarka' },
+  en: { washing: 'Washing', spinning: 'Spinning', washing_washer: 'Washing', drying: 'Drying', finished: 'Finished', paused: 'Paused', delayed: 'Delayed start', error: 'Needs attention', idle: 'Idle', unavailable: 'Unavailable', until: 'until', dishwasher: 'Dishwasher', washer: 'Washing machine' },
+  pl: { washing: 'Mycie', spinning: 'Wirowanie', washing_washer: 'Pranie', drying: 'Suszenie', finished: 'Zakończono', paused: 'Wstrzymano', delayed: 'Opóźniony start', error: 'Wymaga uwagi', idle: 'Gotowa', unavailable: 'Niedostępna', until: 'do', dishwasher: 'Zmywarka', washer: 'Pralka' },
 };
 
 function normalizeState(raw, domain, config, progress) {
@@ -82,7 +90,50 @@ function windowContent(variant, state) {
   return '';
 }
 
+function washerSvg(state, variant, size) {
+  const a = APPLIANCES.washer, d = a.drum;
+  const swayClass = state === 'washing' && variant === 'sway' ? ' sway' : '';
+  const circle = (fill, op) => `<circle cx="${d.cx}" cy="${d.cy}" r="${d.r}" fill="${fill}" opacity="${op}"/>`;
+  let inside = '';
+  let overlay = '';
+  let halfClass = 'drop half';
+  if (state === 'washing') {
+    halfClass += ' tumble';
+    inside = '<g class="wm-water"><path d="M-2,15.6 q1.5,-1.2 3,0 t3,0 t3,0 t3,0 t3,0 t3,0 t3,0 t3,0 t3,0 t3,0 V22 H-2Z" fill="#3b9cff" opacity=".75"/></g>';
+    if (variant === 'bubbles') {
+      inside += [[9.5, 0.7], [12, 0.5], [14.5, 0.8], [11, 0.4]]
+        .map(([x, r], i) => `<circle class="bub bub${i}" cx="${x}" cy="18.5" r="${r}" fill="#8fd0ff"/>`).join('');
+    }
+  } else if (state === 'spinning') {
+    halfClass += ' spinfast';
+    inside = '<circle class="ring" cx="12" cy="14" r="4.6" fill="none" stroke="#8fd0ff" stroke-width=".9" stroke-dasharray="2.2 2.6"/>';
+  } else if (state === 'drying') {
+    halfClass += ' tumble';
+    inside = circle('#ff9800', 0.18) + [10, 14].map((x, i) =>
+      `<path class="steam steam${i}" d="M${x},19 q-1.1,-1.5 0,-2.8 t0,-2.8 t0,-2.8" fill="none" stroke="#ffe3b8" stroke-width=".8" stroke-linecap="round"/>`).join('');
+  } else if (state === 'finished') {
+    inside = circle('#4cd08a', 0.18);
+    overlay = '<path class="check" d="M9,14.4 L11.4,16.8 L15.2,12" fill="none" stroke="var(--mdi-anim-success,#4cd08a)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>';
+  } else if (state === 'error') {
+    inside = circle('#f44336', 0.18);
+    overlay = '<path class="alert" d="M12,11.3 V15 M12,16.8 V17" fill="none" stroke="var(--mdi-anim-error-contrast,#ffd0cc)" stroke-width="1.5" stroke-linecap="round"/>';
+  } else if (state === 'paused') {
+    overlay = '<path d="M10.2,11.8 V16.2 M13.8,11.8 V16.2" fill="none" stroke="var(--mdi-anim-warning,#ffa600)" stroke-width="1.5" stroke-linecap="round"/>';
+  } else if (state === 'delayed') {
+    overlay = '<circle cx="12" cy="14" r="3.2" fill="none" stroke="var(--secondary-text-color)" stroke-width="1"/><path d="M12,12.2 V14 L13.3,14.8" fill="none" stroke="var(--secondary-text-color)" stroke-width=".9" stroke-linecap="round"/>';
+  }
+  const showHalf = ['washing', 'spinning', 'drying', 'idle', 'unavailable'].includes(state);
+  return `<svg class="svg s-${state}${swayClass}" viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true">
+    <defs><clipPath id="drum"><circle cx="${d.cx}" cy="${d.cy}" r="${d.r}"/></clipPath></defs>
+    <g clip-path="url(#drum)">${inside}</g>
+    <path class="frame" d="${a.frame}" fill-rule="evenodd"/>
+    ${showHalf ? `<path class="${halfClass}" d="${a.half}"/>` : ''}
+    ${overlay}
+  </svg>`;
+}
+
 function iconSvg(appliance, state, variant, size) {
+  if (appliance === 'washer') return washerSvg(state, variant, size);
   const a = APPLIANCES[appliance] || APPLIANCES.dishwasher;
   const w = a.window;
   const swayClass = state === 'washing' && variant === 'sway' ? ' sway' : '';
@@ -123,7 +174,7 @@ ha-card { height: 100%; overflow: hidden; cursor: pointer; }
 .svg { overflow: visible; display: block; }
 .svg .frame { fill: var(--secondary-text-color); transition: fill .4s; }
 .svg .drop { fill: var(--secondary-text-color); transition: fill .4s; }
-.svg.s-washing .frame, .svg.s-washing .drop { fill: var(--primary-text-color); }
+.svg.s-washing .frame, .svg.s-washing .drop, .svg.s-spinning .frame, .svg.s-spinning .drop { fill: var(--primary-text-color); }
 .svg.s-drying .frame, .svg.s-drying .drop { fill: #ffcf8a; }
 .svg.s-finished .frame { fill: #9be0b8; }
 .svg.s-error .frame { fill: var(--mdi-anim-error, #f44336); }
@@ -142,7 +193,15 @@ ha-card { height: 100%; overflow: hidden; cursor: pointer; }
 .steam { animation: steam 2s ease-out infinite; } .steam1 { animation-delay: .6s; } .steam2 { animation-delay: 1.2s; }
 .check { stroke-dasharray: 20 20; animation: draw 2.4s ease-out infinite; }
 .alert { animation: pulse 1.4s ease-in-out infinite; }
+.half { transform-origin: 12px 14px; }
+.half.tumble { animation: tumble 2.4s ease-in-out infinite alternate; }
+.half.spinfast { animation: spin 0.45s linear infinite; }
+.ring { transform-origin: 12px 14px; animation: spin 0.9s linear infinite; }
+.wm-water { animation: ww 1.6s linear infinite; }
 
+@keyframes tumble { from { transform: rotate(-70deg); } to { transform: rotate(200deg); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes ww { from { transform: translateX(0); } to { transform: translateX(6px); } }
 @keyframes wv { from { transform: translateX(0); } to { transform: translateX(12px); } }
 @keyframes wv2 { from { transform: translateX(0); } to { transform: translateX(-12px); } }
 @keyframes rise { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: .95; } 100% { transform: translateY(-11px); opacity: 0; } }
@@ -173,8 +232,9 @@ class MdiAnimatedCard extends Base {
     if (!config || !config.entity) throw new Error('mdi-animated-card: "entity" is required');
     const appliance = config.appliance || 'dishwasher';
     if (!APPLIANCES[appliance]) throw new Error(`mdi-animated-card: unsupported appliance "${appliance}" (supported: ${Object.keys(APPLIANCES).join(', ')})`);
-    if (config.variant && !VARIANTS.includes(config.variant)) throw new Error(`mdi-animated-card: unknown variant "${config.variant}" (use ${VARIANTS.join(', ')})`);
-    this._config = { appliance, variant: 'wave', layout: 'horizontal', icon_size: 72, show_progress: true, show_finish_time: true, ...config };
+    const def = APPLIANCES[appliance];
+    if (config.variant && !def.variants.includes(config.variant)) throw new Error(`mdi-animated-card: unknown variant "${config.variant}" for ${appliance} (use ${def.variants.join(', ')})`);
+    this._config = { appliance, variant: def.defaultVariant, layout: 'horizontal', icon_size: 72, show_progress: true, show_finish_time: true, ...config };
     this._sig = null;
     if (!this.shadowRoot) this.attachShadow({ mode: 'open' });
     this._render();
@@ -217,7 +277,7 @@ class MdiAnimatedCard extends Base {
     const L = LABELS[lang];
     const c = this._config;
     let sub = '';
-    if (v.state === 'washing' || v.state === 'drying') {
+    if (v.state === 'washing' || v.state === 'drying' || v.state === 'spinning') {
       const parts = [];
       if (c.show_progress && Number.isFinite(v.progress)) parts.push(`${Math.round(v.progress)}%`);
       if (c.show_finish_time && v.finish) {
@@ -228,8 +288,8 @@ class MdiAnimatedCard extends Base {
       }
       sub = parts.join(' · ');
     }
-    const showBar = c.show_progress && Number.isFinite(v.progress) && (v.state === 'washing' || v.state === 'drying');
-    const label = v.state === 'unavailable' ? L.unavailable : L[v.state];
+    const showBar = c.show_progress && Number.isFinite(v.progress) && (v.state === 'washing' || v.state === 'drying' || v.state === 'spinning');
+    const label = v.state === 'unavailable' ? L.unavailable : (v.state === 'washing' && c.appliance === 'washer' ? L.washing_washer : L[v.state]);
     const esc = (s) => String(s).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
     this.shadowRoot.innerHTML = `
       <style>${STYLE}</style>
@@ -267,7 +327,7 @@ class MdiAnimatedCardEditor extends Base {
       { name: 'appliance', selector: { select: { mode: 'dropdown', options: Object.keys(APPLIANCES).map((v) => ({ value: v, label: v })) } } },
       { name: 'entity', required: true, selector: { entity: {} } },
       { name: 'name', selector: { text: {} } },
-      { name: 'variant', selector: { select: { mode: 'dropdown', options: VARIANTS.map((v) => ({ value: v, label: v })) } } },
+      { name: 'variant', selector: { select: { mode: 'dropdown', options: (APPLIANCES[this._config?.appliance]?.variants || APPLIANCES.dishwasher.variants).map((v) => ({ value: v, label: v })) } } },
       { name: 'progress_entity', selector: { entity: { domain: 'sensor' } } },
       { name: 'finish_entity', selector: { entity: { domain: 'sensor' } } },
       { name: 'drying_from_progress', selector: { number: { min: 1, max: 100, step: 1, mode: 'box' } } },
@@ -294,7 +354,7 @@ class MdiAnimatedCardEditor extends Base {
     }
     this._form.hass = this._hass;
     this._form.schema = this._schema();
-    this._form.data = { appliance: 'dishwasher', variant: 'wave', layout: 'horizontal', show_progress: true, show_finish_time: true, ...this._config };
+    this._form.data = { appliance: 'dishwasher', variant: (APPLIANCES[this._config?.appliance] || APPLIANCES.dishwasher).defaultVariant, layout: 'horizontal', show_progress: true, show_finish_time: true, ...this._config };
   }
 }
 
@@ -306,7 +366,7 @@ if (!window.customCards.some((c) => c.type === 'mdi-animated-card')) {
   window.customCards.push({
     type: 'mdi-animated-card',
     name: 'MDI Animated Appliances',
-    description: 'Animated Material Design Icon of a household appliance driven by an entity (dishwasher for now).',
+    description: 'Animated Material Design Icon of a household appliance driven by an entity (dishwasher, washing machine).',
     preview: true,
     documentationURL: 'https://github.com/bglowacki/mdi-animated-appliances',
   });

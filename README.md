@@ -6,12 +6,12 @@ draws itself when the cycle is finished.
 
 ![Preview](assets/preview.gif)
 
-Currently supported appliances: **dishwasher** (more to come – the card already has an `appliance` option).
+Supported appliances: **dishwasher** and **washer** (washing machine). More to come – pick one with the `appliance` option.
 
 * Pure SVG + CSS, no dependencies, no `card-mod`, no extra resources.
 * Uses the real `mdi:dishwasher` outline so it blends in with the rest of your dashboard and theme.
-* Four washing animations: `wave`, `bubbles`, `drops`, `sway`.
-* States: washing, drying, finished, paused, delayed start, error, idle, unavailable.
+* Washing animations – dishwasher: `wave`, `bubbles`, `drops`, `sway`; washer: `tumble` (rotating drum), `bubbles`, `sway`.
+* States: washing, spinning (washer), drying, finished, paused, delayed start, error, idle, unavailable.
 * Optional progress bar and finish time.
 * Visual editor, English and Polish labels, honours `prefers-reduced-motion`.
 
@@ -44,9 +44,9 @@ variant: wave
 | Option | Default | Description |
 |---|---|---|
 | `entity` | – | **Required.** Entity carrying the appliance status (see *Supported entities*). |
-| `appliance` | `dishwasher` | Appliance drawing. |
+| `appliance` | `dishwasher` | `dishwasher` or `washer`. |
 | `name` | entity name | Card title. |
-| `variant` | `wave` | Washing animation: `wave`, `bubbles`, `drops`, `sway`. |
+| `variant` | `wave` / `tumble` | Dishwasher: `wave`, `bubbles`, `drops`, `sway`. Washer: `tumble`, `bubbles`, `sway`. |
 | `progress_entity` | – | Numeric 0–100 sensor; shows a bar and a percentage. |
 | `finish_entity` | – | Timestamp sensor; shows “until HH:MM”. |
 | `drying_from_progress` | – | Show the *drying* animation once progress reaches this % (for integrations that do not report a drying phase). |
@@ -63,6 +63,8 @@ variant: wave
 * `sensor` with an operation state – recognised out of the box: Home Connect (`run`, `finished`,
   `inactive`, `ready`, `pause`, `delayedstart`, `actionrequired`, `error`), and generic words such as
   `washing`, `drying`, `done`, `idle`.
+* Washing machines (e.g. LG ThinQ `job_state`): `wash`, `rinse`, `spin`, `drying`, `finish`, `delay_wash`, `none`, and
+  `machine_state` (`run`, `pause`, `stop`).
 * `switch`, `input_boolean`, `binary_sensor`: `on` is shown as washing, `off` as idle.
 * Anything else: use `state_map`, e.g.
 

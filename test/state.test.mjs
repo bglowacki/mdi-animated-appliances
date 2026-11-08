@@ -35,3 +35,16 @@ test('drying_from_progress turns late washing into drying', () => {
   assert.equal(n('run', 'sensor', {}, 99), 'washing');
   assert.equal(n('finished', 'sensor', { drying_from_progress: 85 }, 100), 'finished');
 });
+
+test('LG ThinQ washer job states', () => {
+  assert.equal(n('wash'), 'washing');
+  assert.equal(n('rinse'), 'washing');
+  assert.equal(n('ai_wash'), 'washing');
+  assert.equal(n('spin'), 'spinning');
+  assert.equal(n('drying'), 'drying');
+  assert.equal(n('finish'), 'finished');
+  assert.equal(n('delay_wash'), 'delayed');
+  assert.equal(n('none'), 'idle');
+  assert.equal(n('stop'), 'idle');
+  assert.equal(n('pause'), 'paused');
+});
