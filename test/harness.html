@@ -1,0 +1,46 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>mdi-animated-card harness</title>
+<style>
+:root{--primary-text-color:#e1e1e1;--secondary-text-color:#9b9b9b;--divider-color:rgba(255,255,255,.12);--card-background-color:#1c1c1c;--error-color:#f44336;--warning-color:#ffa600}
+body{margin:0;background:#111;font-family:Roboto,sans-serif;color:#e1e1e1}
+ha-card{display:block;background:var(--card-background-color);border-radius:12px}
+#grid{display:grid;grid-template-columns:repeat(3,340px);gap:12px;padding:16px}
+</style></head><body><div id="grid"></div>
+<script type="module">
+import '../dist/mdi-animated-appliances.js';
+const now = Date.now();
+const states = {
+  'sensor.dw': { state: 'run', attributes: { friendly_name: new URLSearchParams(location.search).get('lang') === 'en' ? 'Dishwasher' : 'Zmywarka do naczyń' } },
+  'sensor.prog': { state: '62', attributes: {} },
+  'sensor.fin': { state: new Date(now + 40*60000).toISOString(), attributes: {} },
+};
+const lang = new URLSearchParams(location.search).get('lang') || 'pl';
+const hass = { states, locale: { language: lang }, language: lang };
+window.__hass = hass;
+const cases = [
+  ['wave / washing', { variant: 'wave' }, 'run'],
+  ['bubbles / washing', { variant: 'bubbles' }, 'run'],
+  ['drops / washing', { variant: 'drops' }, 'run'],
+  ['sway / washing', { variant: 'sway' }, 'run'],
+  ['drying (progress>=85)', { variant: 'wave', drying_from_progress: 50 }, 'run'],
+  ['finished', {}, 'finished'],
+  ['idle', {}, 'inactive'],
+  ['paused', {}, 'pause'],
+  ['delayed', {}, 'delayedstart'],
+  ['error', {}, 'actionrequired'],
+  ['unavailable', {}, 'unavailable'],
+  ['vertical', { layout: 'vertical' }, 'run'],
+];
+const grid = document.getElementById('grid');
+window.__cards = [];
+for (const [label, extra, st] of cases) {
+  const h = { ...hass, states: { ...states, 'sensor.dw': { ...states['sensor.dw'], state: st } } };
+  const el = document.createElement('mdi-animated-card');
+  el.setConfig({ type: 'custom:mdi-animated-card', entity: 'sensor.dw', progress_entity: 'sensor.prog', finish_entity: 'sensor.fin', ...extra });
+  el.hass = h;
+  el.dataset.label = label;
+  grid.appendChild(el);
+  window.__cards.push(el);
+}
+window.__ready = true;
+</script></body></html>
