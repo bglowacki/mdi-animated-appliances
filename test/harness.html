@@ -39,11 +39,17 @@ const cases = [
   ['washer / paused', { appliance: 'washer', name: 'Pralka' }, 'pause'],
   ['washer / error', { appliance: 'washer', name: 'Pralka' }, 'error'],
   ['washer / delayed', { appliance: 'washer', name: 'Pralka' }, 'delay_wash'],
+  ['dryer / heat', { appliance: 'dryer', entity: 'binary_sensor.dr', name: 'Suszarka', progress_entity: undefined, finish_entity: undefined }, 'on'],
+  ['dryer / tumble', { appliance: 'dryer', variant: 'tumble', entity: 'binary_sensor.dr', name: 'Suszarka', progress_entity: undefined, finish_entity: undefined }, 'on'],
+  ['dryer / sway', { appliance: 'dryer', variant: 'sway', entity: 'binary_sensor.dr', name: 'Suszarka', progress_entity: undefined, finish_entity: undefined }, 'on'],
+  ['dryer / off', { appliance: 'dryer', entity: 'binary_sensor.dr', name: 'Suszarka', progress_entity: undefined, finish_entity: undefined }, 'off'],
+  ['dryer / finished', { appliance: 'dryer', entity: 'sensor.dw', name: 'Suszarka', progress_entity: undefined, finish_entity: undefined }, 'finished'],
+  ['dryer / error', { appliance: 'dryer', entity: 'sensor.dw', name: 'Suszarka', progress_entity: undefined, finish_entity: undefined }, 'error'],
 ];
 const grid = document.getElementById('grid');
 window.__cards = [];
 for (const [label, extra, st] of cases) {
-  const h = { ...hass, states: { ...states, 'sensor.dw': { ...states['sensor.dw'], state: st } } };
+  const h = { ...hass, states: { ...states, 'sensor.dw': { ...states['sensor.dw'], state: st }, 'binary_sensor.dr': { state: st, attributes: {}, last_changed: new Date(now - 95*60000).toISOString() } } };
   const el = document.createElement('mdi-animated-card');
   el.setConfig({ type: 'custom:mdi-animated-card', entity: 'sensor.dw', progress_entity: 'sensor.prog', finish_entity: 'sensor.fin', ...extra });
   el.hass = h;

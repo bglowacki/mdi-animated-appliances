@@ -6,11 +6,11 @@ draws itself when the cycle is finished.
 
 ![Preview](assets/preview.gif)
 
-Supported appliances: **dishwasher** and **washer** (washing machine). More to come – pick one with the `appliance` option.
+Supported appliances: **dishwasher**, **washer** (washing machine) and **dryer** (tumble dryer). More to come – pick one with the `appliance` option.
 
 * Pure SVG + CSS, no dependencies, no `card-mod`, no extra resources.
 * Uses the real `mdi:dishwasher` outline so it blends in with the rest of your dashboard and theme.
-* Washing animations – dishwasher: `wave`, `bubbles`, `drops`, `sway`; washer: `tumble` (rotating drum), `bubbles`, `sway`.
+* Washing animations – dishwasher: `wave`, `bubbles`, `drops`, `sway`; washer: `tumble` (rotating drum), `bubbles`, `sway`; dryer: `heat` (glowing drum with moving heat waves, default), `tumble` (items orbiting the drum), `sway`.
 * States: washing, spinning (washer), drying, finished, paused, delayed start, error, idle, unavailable.
 * Optional progress bar and finish time.
 * Visual editor, English and Polish labels, honours `prefers-reduced-motion`.
@@ -44,9 +44,9 @@ variant: wave
 | Option | Default | Description |
 |---|---|---|
 | `entity` | – | **Required.** Entity carrying the appliance status (see *Supported entities*). |
-| `appliance` | `dishwasher` | `dishwasher` or `washer`. |
+| `appliance` | `dishwasher` | `dishwasher`, `washer` or `dryer`. |
 | `name` | entity name | Card title. |
-| `variant` | `wave` / `tumble` | Dishwasher: `wave`, `bubbles`, `drops`, `sway`. Washer: `tumble`, `bubbles`, `sway`. |
+| `variant` | `wave` / `tumble` / `heat` | Dishwasher: `wave`, `bubbles`, `drops`, `sway`. Washer: `tumble`, `bubbles`, `sway`. Dryer: `heat`, `tumble`, `sway`. |
 | `progress_entity` | – | Numeric 0–100 sensor; shows a bar and a percentage. |
 | `finish_entity` | – | Timestamp sensor; shows “until HH:MM”. |
 | `drying_from_progress` | – | Show the *drying* animation once progress reaches this % (for integrations that do not report a drying phase). |
@@ -57,6 +57,15 @@ variant: wave
 | `show_finish_time` | `true` | Show finish time. |
 | `language` | HA language | `en` or `pl`. |
 | `tap_action` | `more-info` | Standard Home Assistant action object. |
+
+A tumble dryer on a smart plug (no cycle status) works with any on/off entity – e.g. a binary sensor that is `on`
+while the dryer draws power. The card then shows “since HH:MM”:
+
+```yaml
+type: custom:mdi-animated-card
+appliance: dryer
+entity: binary_sensor.dryer_running
+```
 
 ### Supported entities
 

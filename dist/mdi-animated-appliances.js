@@ -3,7 +3,7 @@
  * https://github.com/bglowacki/mdi-animated-appliances
  * MIT License. Icon geometry: Material Design Icons by Pictogrammers (Apache-2.0), see NOTICE.
  */
-const VERSION = '0.2.0';
+const VERSION = '0.3.0';
 
 /* ---------- MDI "dishwasher" geometry (split so the drop can be swapped for a check) ---------- */
 const DISHWASHER_FRAME =
@@ -17,8 +17,17 @@ const WASHER_FRAME =
 const WASHER_HALF =
   'M14.83,11.17C16.39,12.73 16.39,15.27 14.83,16.83C13.27,18.39 10.73,18.39 9.17,16.83L14.83,11.17';
 
+/* MDI "tumble-dryer": body with the drum cut out, plus the two "heat" waves that sit inside the drum */
+const DRYER_FRAME =
+  'M6,2H18A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2M7,4A1,1 0 0,0 6,5A1,1 0 0,0 7,6A1,1 0 0,0 8,5A1,1 0 0,0 7,4M10,4A1,1 0 0,0 9,5A1,1 0 0,0 10,6A1,1 0 0,0 11,5A1,1 0 0,0 10,4M12,8A6,6 0 0,0 6,14A6,6 0 0,0 12,20A6,6 0 0,0 18,14A6,6 0 0,0 12,8Z';
+const DRYER_WAVES = [
+  'M8.11,10.5H10C9.76,11.88 10,12.67 10.58,13.29C11.68,14.36 12.16,15.71 11.89,17.5H10C10.24,16.12 10,15.33 9.42,14.71C8.32,13.64 7.85,12.29 8.11,10.5Z',
+  'M12.11,10.5H14C13.76,11.88 14,12.67 14.58,13.29C15.68,14.36 16.16,15.71 15.89,17.5H14C14.24,16.12 14,15.33 13.42,14.71C12.32,13.64 11.85,12.29 12.11,10.5Z',
+];
+
 const APPLIANCES = {
   dishwasher: { frame: DISHWASHER_FRAME, drop: DISHWASHER_DROP, window: { x: 6, y: 8, w: 12, h: 12 }, variants: ['wave', 'bubbles', 'drops', 'sway'], defaultVariant: 'wave' },
+  dryer: { frame: DRYER_FRAME, waves: DRYER_WAVES, drum: { cx: 12, cy: 14, r: 6 }, variants: ['heat', 'tumble', 'sway'], defaultVariant: 'heat' },
   washer: { frame: WASHER_FRAME, half: WASHER_HALF, drum: { cx: 12, cy: 14, r: 6 }, variants: ['tumble', 'bubbles', 'sway'], defaultVariant: 'tumble' },
 };
 
@@ -38,8 +47,8 @@ const STATE_WORDS = {
 const SWITCH_DOMAINS = ['switch', 'input_boolean', 'binary_sensor', 'fan', 'light'];
 
 const LABELS = {
-  en: { washing: 'Washing', spinning: 'Spinning', washing_washer: 'Washing', drying: 'Drying', finished: 'Finished', paused: 'Paused', delayed: 'Delayed start', error: 'Needs attention', idle: 'Idle', unavailable: 'Unavailable', until: 'until', dishwasher: 'Dishwasher', washer: 'Washing machine' },
-  pl: { washing: 'Mycie', spinning: 'Wirowanie', washing_washer: 'Pranie', drying: 'Suszenie', finished: 'Zakończono', paused: 'Wstrzymano', delayed: 'Opóźniony start', error: 'Wymaga uwagi', idle: 'Gotowa', unavailable: 'Niedostępna', until: 'do', dishwasher: 'Zmywarka', washer: 'Pralka' },
+  en: { washing: 'Washing', spinning: 'Spinning', washing_washer: 'Washing', drying: 'Drying', finished: 'Finished', paused: 'Paused', delayed: 'Delayed start', error: 'Needs attention', idle: 'Idle', unavailable: 'Unavailable', until: 'until', since: 'since', dishwasher: 'Dishwasher', washer: 'Washing machine', dryer: 'Tumble dryer', run_dryer: 'Drying' },
+  pl: { washing: 'Mycie', spinning: 'Wirowanie', washing_washer: 'Pranie', drying: 'Suszenie', finished: 'Zakończono', paused: 'Wstrzymano', delayed: 'Opóźniony start', error: 'Wymaga uwagi', idle: 'Gotowa', unavailable: 'Niedostępna', until: 'do', since: 'od', dishwasher: 'Zmywarka', washer: 'Pralka', dryer: 'Suszarka', run_dryer: 'Suszenie' },
 };
 
 function normalizeState(raw, domain, config, progress) {
@@ -132,7 +141,46 @@ function washerSvg(state, variant, size) {
   </svg>`;
 }
 
+function dryerSvg(state, variant, size) {
+  const a = APPLIANCES.dryer, d = a.drum;
+  const running = state === 'washing' || state === 'drying';
+  const swayClass = running && variant === 'sway' ? ' sway' : '';
+  const circle = (fill, op, cls = '') => `<circle class="${cls}" cx="${d.cx}" cy="${d.cy}" r="${d.r}" fill="${fill}" opacity="${op}"/>`;
+  let inside = '';
+  let overlay = '';
+  let showWaves = true;
+  if (running) {
+    inside = circle('#ff9800', 0.22, 'glow');
+    inside += variant === 'tumble'
+      ? '<g class="orbit"><circle cx="12" cy="9.9" r=".9" fill="#ffd9a0"/><circle cx="15.6" cy="16" r=".9" fill="#ffd9a0"/><circle cx="8.4" cy="16" r=".9" fill="#ffd9a0"/></g>'
+      : '<circle class="ring" cx="12" cy="14" r="5" fill="none" stroke="#ffd9a0" stroke-width=".7" stroke-dasharray="1.4 2.6"/>';
+  } else if (state === 'finished') {
+    inside = circle('#4cd08a', 0.18);
+    overlay = '<path class="check" d="M9,14.4 L11.4,16.8 L15.2,12" fill="none" stroke="var(--mdi-anim-success,#4cd08a)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>';
+    showWaves = false;
+  } else if (state === 'error') {
+    inside = circle('#f44336', 0.18);
+    overlay = '<path class="alert" d="M12,11.3 V15 M12,16.8 V17" fill="none" stroke="var(--mdi-anim-error-contrast,#ffd0cc)" stroke-width="1.5" stroke-linecap="round"/>';
+    showWaves = false;
+  } else if (state === 'paused') {
+    overlay = '<path d="M10.2,11.8 V16.2 M13.8,11.8 V16.2" fill="none" stroke="var(--mdi-anim-warning,#ffa600)" stroke-width="1.5" stroke-linecap="round"/>';
+    showWaves = false;
+  } else if (state === 'delayed') {
+    overlay = '<circle cx="12" cy="14" r="3.2" fill="none" stroke="var(--secondary-text-color)" stroke-width="1"/><path d="M12,12.2 V14 L13.3,14.8" fill="none" stroke="var(--secondary-text-color)" stroke-width=".9" stroke-linecap="round"/>';
+    showWaves = false;
+  }
+  const waves = showWaves ? a.waves.map((p, i) => `<path class="drop dwave${running ? ' hot dwave' + i : ''}" d="${p}"/>`).join('') : '';
+  return `<svg class="svg s-${state}${swayClass}" viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true">
+    <defs><clipPath id="drum"><circle cx="${d.cx}" cy="${d.cy}" r="${d.r}"/></clipPath></defs>
+    <g clip-path="url(#drum)">${inside}</g>
+    <path class="frame" d="${a.frame}" fill-rule="evenodd"/>
+    ${waves}
+    ${overlay}
+  </svg>`;
+}
+
 function iconSvg(appliance, state, variant, size) {
+  if (appliance === 'dryer') return dryerSvg(state, variant, size);
   if (appliance === 'washer') return washerSvg(state, variant, size);
   const a = APPLIANCES[appliance] || APPLIANCES.dishwasher;
   const w = a.window;
@@ -194,11 +242,18 @@ ha-card { height: 100%; overflow: hidden; cursor: pointer; }
 .check { stroke-dasharray: 20 20; animation: draw 2.4s ease-out infinite; }
 .alert { animation: pulse 1.4s ease-in-out infinite; }
 .half { transform-origin: 12px 14px; }
+.glow { animation: glow 2.4s ease-in-out infinite; }
+.orbit { transform-origin: 12px 14px; animation: tumble 3s ease-in-out infinite alternate; }
+.drop.hot { fill: #ffb454; animation: heatwave 1.8s ease-in-out infinite; }
+.drop.dwave1 { animation-delay: .6s; }
+.svg.s-washing .drop.hot, .svg.s-drying .drop.hot { fill: #ffb454; }
 .half.tumble { animation: tumble 2.4s ease-in-out infinite alternate; }
 .half.spinfast { animation: spin 0.45s linear infinite; }
 .ring { transform-origin: 12px 14px; animation: spin 0.9s linear infinite; }
 .wm-water { animation: ww 1.6s linear infinite; }
 
+@keyframes glow { 50% { opacity: .08; } }
+@keyframes heatwave { 0%, 100% { transform: translateY(1.1px); opacity: .55; } 50% { transform: translateY(-.9px); opacity: 1; } }
 @keyframes tumble { from { transform: rotate(-70deg); } to { transform: rotate(200deg); } }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes ww { from { transform: translateX(0); } to { transform: translateX(6px); } }
@@ -270,7 +325,7 @@ class MdiAnimatedCard extends Base {
     const v = this._compute();
     const lang = this._lang();
     const name = this._config.name ?? v.st?.attributes?.friendly_name ?? LABELS[lang][this._config.appliance];
-    const sig = JSON.stringify([v.state, v.raw, Number.isFinite(v.progress) ? Math.round(v.progress) : null, v.finish, name, lang, this._config]);
+    const sig = JSON.stringify([v.state, v.raw, Number.isFinite(v.progress) ? Math.round(v.progress) : null, v.finish, v.st?.last_changed, name, lang, this._config]);
     if (sig === this._sig) return;
     this._sig = sig;
 
@@ -286,10 +341,14 @@ class MdiAnimatedCard extends Base {
           parts.push(`${L.until} ${d.toLocaleTimeString(this._hass?.locale?.language || lang, { hour: '2-digit', minute: '2-digit' })}`);
         }
       }
+      if (!v.finish && c.show_finish_time && v.st?.last_changed && SWITCH_DOMAINS.includes(c.entity.split('.')[0])) {
+        const d = new Date(v.st.last_changed);
+        if (!isNaN(d)) parts.push(`${L.since} ${d.toLocaleTimeString(this._hass?.locale?.language || lang, { hour: '2-digit', minute: '2-digit' })}`);
+      }
       sub = parts.join(' · ');
     }
     const showBar = c.show_progress && Number.isFinite(v.progress) && (v.state === 'washing' || v.state === 'drying' || v.state === 'spinning');
-    const label = v.state === 'unavailable' ? L.unavailable : (v.state === 'washing' && c.appliance === 'washer' ? L.washing_washer : L[v.state]);
+    const label = v.state === 'unavailable' ? L.unavailable : (v.state === 'washing' && c.appliance === 'washer' ? L.washing_washer : (v.state === 'washing' || v.state === 'drying') && c.appliance === 'dryer' ? L.run_dryer : L[v.state]);
     const esc = (s) => String(s).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
     this.shadowRoot.innerHTML = `
       <style>${STYLE}</style>
@@ -366,7 +425,7 @@ if (!window.customCards.some((c) => c.type === 'mdi-animated-card')) {
   window.customCards.push({
     type: 'mdi-animated-card',
     name: 'MDI Animated Appliances',
-    description: 'Animated Material Design Icon of a household appliance driven by an entity (dishwasher, washing machine).',
+    description: 'Animated Material Design Icon of a household appliance driven by an entity (dishwasher, washing machine, tumble dryer).',
     preview: true,
     documentationURL: 'https://github.com/bglowacki/mdi-animated-appliances',
   });

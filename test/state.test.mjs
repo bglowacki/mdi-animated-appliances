@@ -48,3 +48,9 @@ test('LG ThinQ washer job states', () => {
   assert.equal(n('stop'), 'idle');
   assert.equal(n('pause'), 'paused');
 });
+
+test('smart-plug style dryer: binary_sensor / switch on-off', () => {
+  assert.equal(n('on', 'binary_sensor'), 'washing');
+  assert.equal(n('off', 'binary_sensor'), 'idle');
+  assert.equal(n('on', 'switch'), 'washing');
+});
