@@ -3,7 +3,7 @@
  * https://github.com/bglowacki/mdi-animated-appliances
  * MIT License. Icon geometry: Material Design Icons by Pictogrammers (Apache-2.0), see NOTICE.
  */
-const VERSION = '0.6.0';
+const VERSION = '0.7.0';
 
 /* ---------- MDI "dishwasher" geometry (split so the drop can be swapped for a check) ---------- */
 const DISHWASHER_FRAME =
@@ -75,6 +75,45 @@ function normalizeState(raw, domain, config, progress) {
     if (STATE_WORDS[key].includes(s)) return applyDrying(key, progress, config);
   }
   return 'idle';
+}
+
+/* ---------- rules: map any entity state/attribute to a state, animation variant and label ---------- */
+const RULE_STATES = [...Object.keys(STATE_WORDS), 'unavailable'];
+const norm = (x) => (typeof x === 'string' ? x.trim().toLowerCase() : x);
+const same = (a, b) => String(norm(a)) === String(norm(b));
+
+function matchCondition(cond, hass, mainId) {
+  if (!cond || typeof cond !== 'object') return false;
+  const st = hass?.states?.[cond.entity || mainId];
+  if (!st) return false;
+  const raw = cond.attribute !== undefined ? st.attributes?.[cond.attribute] : st.state;
+  const eq = cond.state !== undefined ? cond.state : cond.equals;
+  let tested = false;
+  if (eq !== undefined) { tested = true; if (!same(raw, eq)) return false; }
+  if (cond.in !== undefined) { tested = true; if (!Array.isArray(cond.in) || !cond.in.some((x) => same(raw, x))) return false; }
+  if (cond.not !== undefined) { tested = true; const list = Array.isArray(cond.not) ? cond.not : [cond.not]; if (list.some((x) => same(raw, x))) return false; }
+  if (cond.above !== undefined) { tested = true; const n = Number(raw); if (!Number.isFinite(n) || !(n > Number(cond.above))) return false; }
+  if (cond.below !== undefined) { tested = true; const n = Number(raw); if (!Number.isFinite(n) || !(n < Number(cond.below))) return false; }
+  return tested;
+}
+
+function matchRule(when, hass, mainId) {
+  const list = Array.isArray(when) ? when : [when];
+  return list.length > 0 && list.every((c) => matchCondition(c, hass, mainId));
+}
+
+/* First matching rule wins. A rule can set the logical state, the animation variant and a label. */
+function applyRules(rules, base, hass, mainId) {
+  const out = { state: base.state, variant: base.variant, label: null };
+  if (!Array.isArray(rules) || base.state === 'unavailable') return out;
+  for (const rule of rules) {
+    if (!rule || !matchRule(rule.when, hass, mainId)) continue;
+    if (rule.state) out.state = rule.state;
+    if (rule.variant) out.variant = rule.variant;
+    if (rule.label !== undefined && rule.label !== null) out.label = String(rule.label);
+    break;
+  }
+  return out;
 }
 
 function applyDrying(key, progress, config) {
@@ -497,6 +536,15 @@ class MdiAnimatedCard extends Base {
     const appliance = config.appliance || 'dishwasher';
     if (!APPLIANCES[appliance]) throw new Error(`mdi-animated-card: unsupported appliance "${appliance}" (supported: ${Object.keys(APPLIANCES).join(', ')})`);
     const def = APPLIANCES[appliance];
+    if (config.rules !== undefined) {
+      if (!Array.isArray(config.rules)) throw new Error('mdi-animated-card: "rules" must be a list');
+      config.rules.forEach((rule, i) => {
+        if (!rule || rule.when === undefined) throw new Error(`mdi-animated-card: rules[${i}] needs "when"`);
+        if (rule.state && !RULE_STATES.includes(rule.state)) throw new Error(`mdi-animated-card: rules[${i}].state "${rule.state}" is unknown (use ${RULE_STATES.join(', ')})`);
+        if (rule.variant && !def.variants.includes(rule.variant)) throw new Error(`mdi-animated-card: rules[${i}].variant "${rule.variant}" is unknown for ${appliance} (use ${def.variants.join(', ')})`);
+        if (rule.state === undefined && rule.variant === undefined && rule.label === undefined) throw new Error(`mdi-animated-card: rules[${i}] needs "state", "variant" or "label"`);
+      });
+    }
     if (config.variant && !def.variants.includes(config.variant)) throw new Error(`mdi-animated-card: unknown variant "${config.variant}" for ${appliance} (use ${def.variants.join(', ')})`);
     this._config = { appliance, variant: def.defaultVariant, layout: 'horizontal', icon_size: 72, show_progress: true, show_finish_time: true, ...config };
     this._sig = null;
@@ -526,7 +574,8 @@ class MdiAnimatedCard extends Base {
     const state = st ? normalizeState(st.state, domain, c, progress) : 'unavailable';
     const finStateObj = c.finish_entity ? h?.states?.[c.finish_entity] : null;
     const finish = finStateObj && !['unknown', 'unavailable', ''].includes(finStateObj.state) ? finStateObj.state : null;
-    return { st, state, progress, finish, raw: st?.state };
+    const ruled = applyRules(c.rules, { state, variant: c.variant }, h, c.entity);
+    return { st, state: ruled.state, variant: ruled.variant, ruleLabel: ruled.label, progress, finish, raw: st?.state };
   }
 
   _render() {
@@ -534,7 +583,7 @@ class MdiAnimatedCard extends Base {
     const v = this._compute();
     const lang = this._lang();
     const name = this._config.name ?? v.st?.attributes?.friendly_name ?? LABELS[lang][this._config.appliance];
-    const sig = JSON.stringify([v.state, v.raw, this._hass?.states?.[this._config.battery_entity]?.state, v.st?.attributes?.battery_level, Number.isFinite(v.progress) ? Math.round(v.progress) : null, v.finish, v.st?.last_changed, name, lang, this._config]);
+    const sig = JSON.stringify([v.state, v.raw, this._hass?.states?.[this._config.battery_entity]?.state, v.st?.attributes?.battery_level, Number.isFinite(v.progress) ? Math.round(v.progress) : null, v.finish, v.st?.last_changed, v.variant, v.ruleLabel, name, lang, this._config]);
     if (sig === this._sig) return;
     this._sig = sig;
 
@@ -562,13 +611,13 @@ class MdiAnimatedCard extends Base {
       sub = parts.join(' · ');
     }
     const showBar = !robot && c.show_progress && Number.isFinite(v.progress) && (v.state === 'washing' || v.state === 'drying' || v.state === 'spinning');
-    const label = v.state === 'unavailable' ? L.unavailable : robot && v.state === 'washing' ? L['run_' + c.appliance] : robot && v.state === 'idle' ? L.docked : (v.state === 'washing' && c.appliance === 'washer' ? L.washing_washer : (v.state === 'washing' || v.state === 'drying') && c.appliance === 'dryer' ? L.run_dryer : L[v.state]);
+    const label = v.ruleLabel !== null && v.ruleLabel !== undefined ? v.ruleLabel : v.state === 'unavailable' ? L.unavailable : robot && v.state === 'washing' ? L['run_' + c.appliance] : robot && v.state === 'idle' ? L.docked : (v.state === 'washing' && c.appliance === 'washer' ? L.washing_washer : (v.state === 'washing' || v.state === 'drying') && c.appliance === 'dryer' ? L.run_dryer : L[v.state]);
     const esc = (s) => String(s).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
     this.shadowRoot.innerHTML = `
       <style>${STYLE}</style>
       <ha-card>
         <div class="wrap ${c.layout === 'vertical' ? 'vertical' : ''}" role="button" tabindex="0">
-          <div class="icon">${iconSvg(c.appliance, v.state, c.variant, Number(c.icon_size) || 72)}</div>
+          <div class="icon">${iconSvg(c.appliance, v.state, v.variant, Number(c.icon_size) || 72)}</div>
           <div class="txt">
             <div class="name">${esc(name)}</div>
             <div class="state">${esc(label)}</div>
@@ -648,4 +697,4 @@ if (!window.customCards.some((c) => c.type === 'mdi-animated-card')) {
 console.info(`%c MDI-ANIMATED-APPLIANCES %c v${VERSION} `, 'color:#fff;background:#3b9cff;font-weight:700', 'color:#3b9cff;background:#fff');
 }
 
-export { normalizeState, STATE_WORDS, VARIANTS };
+export { normalizeState, STATE_WORDS, VARIANTS, matchRule, applyRules, RULE_STATES };

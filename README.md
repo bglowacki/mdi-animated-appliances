@@ -187,6 +187,7 @@ variant: wave
 | `finish_entity` | – | Timestamp sensor; shows “until HH:MM” (appliances, not robots). |
 | `battery_entity` | `battery_level` attribute | Battery sensor for `vacuum` / `mower`; shows “Battery 78%”. |
 | `drying_from_progress` | – | Show the *drying* animation once progress reaches this % (for integrations that do not report a drying phase). |
+| `rules` | – | List of rules mapping any entity state or attribute to a state, an animation and a label – see *Rules*. |
 | `state_map` | – | Map raw states to `washing`, `drying`, `finished`, `paused`, `delayed`, `error`, `idle`. |
 | `layout` | `horizontal` | `horizontal` or `vertical`. |
 | `icon_size` | `72` | Icon size in px. |
@@ -213,6 +214,51 @@ appliance: vacuum        # or: mower
 entity: vacuum.my_robot  # or: lawn_mower.my_mower
 battery_entity: sensor.my_robot_battery   # optional
 ```
+
+### Rules: map states to animations
+
+`rules` lets you choose the state, the animation (`variant`) and the label from *any* entity or attribute, so the
+card can follow any device without new code. Rules are checked from top to bottom and **the first match wins**;
+if none matches, the normal state mapping and `variant` apply. `rules` work for every appliance and are edited in YAML.
+
+```yaml
+type: custom:mdi-animated-card
+appliance: vacuum
+entity: vacuum.my_robot
+variant: clean
+rules:
+  - when: { attribute: washing, equals: true }   # attribute of the card entity
+    state: washing
+    variant: mop
+    label: Washing the mop
+  - when: { state: cleaning }                      # state of the card entity
+    variant: brush
+  - when: { entity: sensor.my_robot_battery, below: 15 }   # any other entity
+    state: error
+    label: Low battery
+```
+
+Each rule needs `when` and at least one of `state`, `variant`, `label`:
+
+| Key | Description |
+|---|---|
+| `when` | A condition, or a list of conditions that must **all** match. |
+| `state` | Logical state to show: `washing`, `spinning`, `drying`, `finished`, `paused`, `delayed`, `error`, `idle`, `returning` or `unavailable`. |
+| `variant` | Animation to use (any variant of the appliance, see the Gallery). |
+| `label` | Text shown instead of the standard state label. |
+
+Condition keys (all given keys must hold):
+
+| Key | Description |
+|---|---|
+| `entity` | Entity to test; defaults to the card entity. |
+| `attribute` | Test this attribute instead of the state. |
+| `state` or `equals` | Value must equal this (case-insensitive; booleans and numbers work too). |
+| `in` | Value must be one of the listed values. |
+| `not` | Value must not equal this (or any of a list). |
+| `above` / `below` | Numeric comparison. |
+
+When the card entity is `unavailable`, rules are skipped.
 
 ### Supported entities
 
