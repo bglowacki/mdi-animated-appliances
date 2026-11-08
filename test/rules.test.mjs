@@ -52,3 +52,9 @@ test('no match keeps the base; unavailable base ignores rules', () => {
 test('rule states cover every logical state', () => {
   for (const s of ['washing', 'spinning', 'drying', 'finished', 'paused', 'delayed', 'error', 'idle', 'returning', 'unavailable']) assert.ok(RULE_STATES.includes(s), s);
 });
+
+test('a missing attribute never matches, also with not', () => {
+  assert.equal(matchRule({ attribute: 'nope', not: 'x' }, hass, 'vacuum.v'), false);
+  assert.equal(matchRule({ attribute: 'nope', below: 5 }, hass, 'vacuum.v'), false);
+  assert.equal(matchRule({ attribute: 'mode', not: 'x' }, hass, 'vacuum.v'), true);
+});

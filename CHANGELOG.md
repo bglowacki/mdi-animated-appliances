@@ -2,6 +2,9 @@
 
 All notable changes. Versions follow [SemVer](https://semver.org/); default animations never change when variants are added.
 
+## 0.7.1
+- Fix: a rule condition on a missing attribute never matches (previously `not` matched it).
+
 ## 0.7.0
 - New `rules` option: map any entity state or attribute to a logical state, an animation `variant` and a label (first match wins; conditions `state`/`equals`, `attribute`, `in`, `not`, `above`/`below`, other entities, AND lists). Works for every appliance.
 - README: Rules section, gallery reorganised into collapsible per-appliance sections with icon-only tiles.

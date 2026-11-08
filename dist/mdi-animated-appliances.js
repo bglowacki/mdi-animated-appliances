@@ -3,7 +3,7 @@
  * https://github.com/bglowacki/mdi-animated-appliances
  * MIT License. Icon geometry: Material Design Icons by Pictogrammers (Apache-2.0), see NOTICE.
  */
-const VERSION = '0.7.0';
+const VERSION = '0.7.1';
 
 /* ---------- MDI "dishwasher" geometry (split so the drop can be swapped for a check) ---------- */
 const DISHWASHER_FRAME =
@@ -87,6 +87,7 @@ function matchCondition(cond, hass, mainId) {
   const st = hass?.states?.[cond.entity || mainId];
   if (!st) return false;
   const raw = cond.attribute !== undefined ? st.attributes?.[cond.attribute] : st.state;
+  if (raw === undefined || raw === null) return false; // a missing attribute never matches (even with `not`)
   const eq = cond.state !== undefined ? cond.state : cond.equals;
   let tested = false;
   if (eq !== undefined) { tested = true; if (!same(raw, eq)) return false; }
