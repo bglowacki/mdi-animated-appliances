@@ -1,5 +1,6 @@
-The dishwasher outline used by this card is the "dishwasher" icon from
-Material Design Icons by Pictogrammers (https://pictogrammers.com/library/mdi/),
-licensed under the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0).
-The icon path is embedded in dist/mdi-animated-appliances.js; the animation overlays
+The icon outlines used by this card are the "dishwasher", "washing-machine", "tumble-dryer",
+"robot-vacuum" and "robot-mower" icons from Material Design Icons by Pictogrammers
+(https://pictogrammers.com/library/mdi/), licensed under the Apache License 2.0
+(https://www.apache.org/licenses/LICENSE-2.0).
+The icon paths are embedded in dist/mdi-animated-appliances.js; the animation overlays
 are original work released under the MIT License of this repository.

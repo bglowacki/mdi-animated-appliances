@@ -58,8 +58,13 @@ const cases = [
 ];
 const grid = document.getElementById('grid');
 window.__cards = [];
-for (const [label, extra, st] of cases) {
-  const h = { ...hass, states: { ...states, 'sensor.dw': { ...states['sensor.dw'], state: st }, 'binary_sensor.dr': { state: st, attributes: {}, last_changed: new Date(now - 95*60000).toISOString() } } };
+// ?preview=1 renders the README showcase: one running card per appliance (+ a robot returning)
+const PREVIEW = ['wave / washing', 'washer / tumble', 'dryer / heat', 'vacuum / cleaning', 'mower / mowing', 'vacuum / returning'];
+const EN = { 'Pralka': 'Washing machine', 'Suszarka': 'Tumble dryer', 'Luba': 'Robot mower', 'Roborock': 'Robot vacuum' };
+const shown = new URLSearchParams(location.search).get('preview') ? PREVIEW.map((l) => cases.find((c) => c[0] === l)) : cases;
+for (const [label, extra0, st] of shown) {
+  const extra = new URLSearchParams(location.search).get('preview') && EN[extra0.name] ? { ...extra0, name: EN[extra0.name] } : extra0;
+  const h = { ...hass, states: { ...states, 'sensor.dw': { ...states['sensor.dw'], state: st }, 'binary_sensor.dr': { state: st, attributes: { battery_level: 78 }, last_changed: new Date(now - 95*60000).toISOString() } } };
   const el = document.createElement('mdi-animated-card');
   el.setConfig({ type: 'custom:mdi-animated-card', entity: 'sensor.dw', progress_entity: 'sensor.prog', finish_entity: 'sensor.fin', ...extra });
   el.hass = h;
