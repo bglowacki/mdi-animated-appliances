@@ -6,7 +6,7 @@ draws itself when the cycle is finished.
 
 ![Preview](assets/preview.gif)
 
-Supported appliances: **dishwasher**, **washer** (washing machine) and **dryer** (tumble dryer). More to come – pick one with the `appliance` option.
+Supported appliances: **dishwasher**, **washer** (washing machine), **dryer** (tumble dryer), **vacuum** (robot vacuum) and **mower** (robot lawn mower). More to come – pick one with the `appliance` option.
 
 * Pure SVG + CSS, no dependencies, no `card-mod`, no extra resources.
 * Uses the real `mdi:dishwasher` outline so it blends in with the rest of your dashboard and theme.
@@ -44,9 +44,9 @@ variant: wave
 | Option | Default | Description |
 |---|---|---|
 | `entity` | – | **Required.** Entity carrying the appliance status (see *Supported entities*). |
-| `appliance` | `dishwasher` | `dishwasher`, `washer` or `dryer`. |
+| `appliance` | `dishwasher` | `dishwasher`, `washer`, `dryer`, `vacuum` or `mower`. |
 | `name` | entity name | Card title. |
-| `variant` | `wave` / `tumble` / `heat` | Dishwasher: `wave`, `bubbles`, `drops`, `sway`. Washer: `tumble`, `bubbles`, `sway`. Dryer: `heat`, `tumble`, `sway`. |
+| `variant` | `wave` / `tumble` / `heat` | Dishwasher: `wave`, `bubbles`, `drops`, `sway`. Washer: `tumble`, `bubbles`, `sway`. Dryer: `heat`, `tumble`, `sway`. Vacuum: `clean`, `sway`. Mower: `mow`, `sway`. |
 | `progress_entity` | – | Numeric 0–100 sensor; shows a bar and a percentage. |
 | `finish_entity` | – | Timestamp sensor; shows “until HH:MM”. |
 | `drying_from_progress` | – | Show the *drying* animation once progress reaches this % (for integrations that do not report a drying phase). |
@@ -65,6 +65,16 @@ while the dryer draws power. The card then shows “since HH:MM”:
 type: custom:mdi-animated-card
 appliance: dryer
 entity: binary_sensor.dryer_running
+```
+
+Robots (`vacuum.*` and `lawn_mower.*` entities – states `cleaning`/`mowing`, `returning`, `docked`, `paused`, `error`).
+The card shows the battery (from the `battery_level` attribute, or set `battery_entity`):
+
+```yaml
+type: custom:mdi-animated-card
+appliance: vacuum        # or: mower
+entity: vacuum.my_robot  # or: lawn_mower.my_mower
+battery_entity: sensor.my_robot_battery   # optional
 ```
 
 ### Supported entities

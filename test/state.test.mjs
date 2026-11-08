@@ -54,3 +54,12 @@ test('smart-plug style dryer: binary_sensor / switch on-off', () => {
   assert.equal(n('off', 'binary_sensor'), 'idle');
   assert.equal(n('on', 'switch'), 'washing');
 });
+
+test('robot vacuum / mower states', () => {
+  assert.equal(n('cleaning', 'vacuum'), 'washing');
+  assert.equal(n('mowing', 'lawn_mower'), 'washing');
+  assert.equal(n('returning', 'vacuum'), 'returning');
+  assert.equal(n('docked', 'vacuum'), 'idle');
+  assert.equal(n('paused', 'lawn_mower'), 'paused');
+  assert.equal(n('error', 'vacuum'), 'error');
+});

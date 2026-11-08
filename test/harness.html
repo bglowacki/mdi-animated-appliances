@@ -44,6 +44,16 @@ const cases = [
   ['dryer / sway', { appliance: 'dryer', variant: 'sway', entity: 'binary_sensor.dr', name: 'Suszarka', progress_entity: undefined, finish_entity: undefined }, 'on'],
   ['dryer / off', { appliance: 'dryer', entity: 'binary_sensor.dr', name: 'Suszarka', progress_entity: undefined, finish_entity: undefined }, 'off'],
   ['dryer / finished', { appliance: 'dryer', entity: 'sensor.dw', name: 'Suszarka', progress_entity: undefined, finish_entity: undefined }, 'finished'],
+  ['vacuum / cleaning', { appliance: 'vacuum', entity: 'binary_sensor.dr', name: 'Roborock', progress_entity: undefined, finish_entity: undefined }, 'cleaning'],
+  ['vacuum / returning', { appliance: 'vacuum', entity: 'binary_sensor.dr', name: 'Roborock', progress_entity: undefined, finish_entity: undefined }, 'returning'],
+  ['vacuum / docked', { appliance: 'vacuum', entity: 'binary_sensor.dr', name: 'Roborock', progress_entity: undefined, finish_entity: undefined }, 'docked'],
+  ['vacuum / paused', { appliance: 'vacuum', entity: 'binary_sensor.dr', name: 'Roborock', progress_entity: undefined, finish_entity: undefined }, 'paused'],
+  ['vacuum / error', { appliance: 'vacuum', entity: 'binary_sensor.dr', name: 'Roborock', progress_entity: undefined, finish_entity: undefined }, 'error'],
+  ['mower / mowing', { appliance: 'mower', entity: 'binary_sensor.dr', name: 'Luba', progress_entity: undefined, finish_entity: undefined }, 'mowing'],
+  ['mower / returning', { appliance: 'mower', entity: 'binary_sensor.dr', name: 'Luba', progress_entity: undefined, finish_entity: undefined }, 'returning'],
+  ['mower / docked', { appliance: 'mower', entity: 'binary_sensor.dr', name: 'Luba', progress_entity: undefined, finish_entity: undefined }, 'docked'],
+  ['mower / paused', { appliance: 'mower', entity: 'binary_sensor.dr', name: 'Luba', progress_entity: undefined, finish_entity: undefined }, 'paused'],
+  ['mower / error', { appliance: 'mower', entity: 'binary_sensor.dr', name: 'Luba', progress_entity: undefined, finish_entity: undefined }, 'error'],
   ['dryer / error', { appliance: 'dryer', entity: 'sensor.dw', name: 'Suszarka', progress_entity: undefined, finish_entity: undefined }, 'error'],
 ];
 const grid = document.getElementById('grid');

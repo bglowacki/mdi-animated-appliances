@@ -3,7 +3,7 @@
  * https://github.com/bglowacki/mdi-animated-appliances
  * MIT License. Icon geometry: Material Design Icons by Pictogrammers (Apache-2.0), see NOTICE.
  */
-const VERSION = '0.3.2';
+const VERSION = '0.4.0';
 
 /* ---------- MDI "dishwasher" geometry (split so the drop can be swapped for a check) ---------- */
 const DISHWASHER_FRAME =
@@ -25,9 +25,21 @@ const DRYER_WAVES = [
   'M12.11,10.5H14C13.76,11.88 14,12.67 14.58,13.29C15.68,14.36 16.16,15.71 15.89,17.5H14C14.24,16.12 14,15.33 13.42,14.71C12.32,13.64 11.85,12.29 12.11,10.5Z',
 ];
 
+/* MDI "robot-vacuum" and "robot-mower" outlines */
+const VACUUM_RING =
+  'M12,2C14.65,2 17.19,3.06 19.07,4.93L17.65,6.35C16.15,4.85 14.12,4 12,4C9.88,4 7.84,4.84 6.35,6.35L4.93,4.93C6.81,3.06 9.35,2 12,2M3.66,6.5L5.11,7.94C4.39,9.17 4,10.57 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12C20,10.57 19.61,9.17 18.88,7.94L20.34,6.5C21.42,8.12 22,10.04 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12C2,10.04 2.58,8.12 3.66,6.5Z';
+const VACUUM_BODY =
+  'M12,6A6,6 0 0,1 18,12C18,13.59 17.37,15.12 16.24,16.24L14.83,14.83C14.08,15.58 13.06,16 12,16C10.94,16 9.92,15.58 9.17,14.83L7.76,16.24C6.63,15.12 6,13.59 6,12A6,6 0 0,1 12,6M12,8A1,1 0 0,0 11,9A1,1 0 0,0 12,10A1,1 0 0,0 13,9A1,1 0 0,0 12,8Z';
+const VACUUM_BODY_SOLID =
+  'M12,6A6,6 0 0,1 18,12C18,13.59 17.37,15.12 16.24,16.24L14.83,14.83C14.08,15.58 13.06,16 12,16C10.94,16 9.92,15.58 9.17,14.83L7.76,16.24C6.63,15.12 6,13.59 6,12A6,6 0 0,1 12,6';
+const MOWER_PATH =
+  'M1 14V5H13C18.5 5 23 9.5 23 15V17H20.83C20.42 18.17 19.31 19 18 19C16.69 19 15.58 18.17 15.17 17H10C9.09 18.21 7.64 19 6 19C3.24 19 1 16.76 1 14M6 11C4.34 11 3 12.34 3 14C3 15.66 4.34 17 6 17C7.66 17 9 15.66 9 14C9 12.34 7.66 11 6 11M15 10V12H20.25C19.92 11.27 19.5 10.6 19 10H15Z';
+
 const APPLIANCES = {
   dishwasher: { frame: DISHWASHER_FRAME, drop: DISHWASHER_DROP, window: { x: 6, y: 8, w: 12, h: 12 }, variants: ['wave', 'bubbles', 'drops', 'sway'], defaultVariant: 'wave' },
   dryer: { frame: DRYER_FRAME, waves: DRYER_WAVES, drum: { cx: 12, cy: 14, r: 6 }, variants: ['heat', 'tumble', 'sway'], defaultVariant: 'heat' },
+  vacuum: { variants: ['clean', 'sway'], defaultVariant: 'clean' },
+  mower: { variants: ['mow', 'sway'], defaultVariant: 'mow' },
   washer: { frame: WASHER_FRAME, half: WASHER_HALF, drum: { cx: 12, cy: 14, r: 6 }, variants: ['tumble', 'bubbles', 'sway'], defaultVariant: 'tumble' },
 };
 
@@ -35,20 +47,21 @@ const VARIANTS = Array.from(new Set(Object.values(APPLIANCES).flatMap((a) => a.v
 
 /* ---------- state normalisation ---------- */
 const STATE_WORDS = {
-  washing: ['run', 'running', 'washing', 'wash', 'main_wash', 'mainwash', 'prewash', 'pre_wash', 'pre-wash', 'rinse', 'rinsing', 'in_progress', 'active', 'ai_wash', 'ai_rinse', 'air_wash', 'weight_sensing', 'soak', 'soaking', 'filling'],
+  washing: ['run', 'running', 'washing', 'wash', 'main_wash', 'mainwash', 'prewash', 'pre_wash', 'pre-wash', 'rinse', 'rinsing', 'in_progress', 'active', 'ai_wash', 'ai_rinse', 'air_wash', 'weight_sensing', 'soak', 'soaking', 'filling', 'cleaning', 'mowing', 'mopping', 'sweeping'],
+  returning: ['returning', 'return_to_base', 'returning_to_dock', 'going_home'],
   spinning: ['spin', 'spinning', 'ai_spin', 'draining'],
   drying: ['dry', 'drying', 'final_dry', 'cooling', 'wrinkle_prevent'],
   finished: ['finished', 'finish', 'end', 'ended', 'complete', 'completed', 'done', 'end_of_cycle'],
   paused: ['pause', 'paused'],
   delayed: ['delayedstart', 'delayed_start', 'delayed', 'delay_wash', 'scheduled'],
   error: ['error', 'actionrequired', 'action_required', 'aborting', 'fault', 'alarm'],
-  idle: ['inactive', 'ready', 'idle', 'off', 'standby', 'none', 'initial', 'power_off', 'closed', 'stop', 'stopped', 'freeze_protection'],
+  idle: ['inactive', 'ready', 'idle', 'off', 'standby', 'none', 'initial', 'power_off', 'closed', 'stop', 'stopped', 'freeze_protection', 'docked', 'charging', 'charged'],
 };
 const SWITCH_DOMAINS = ['switch', 'input_boolean', 'binary_sensor', 'fan', 'light'];
 
 const LABELS = {
-  en: { washing: 'Washing', spinning: 'Spinning', washing_washer: 'Washing', drying: 'Drying', finished: 'Finished', paused: 'Paused', delayed: 'Delayed start', error: 'Needs attention', idle: 'Idle', unavailable: 'Unavailable', until: 'until', since: 'since', dishwasher: 'Dishwasher', washer: 'Washing machine', dryer: 'Tumble dryer', run_dryer: 'Drying' },
-  pl: { washing: 'Mycie', spinning: 'Wirowanie', washing_washer: 'Pranie', drying: 'Suszenie', finished: 'Zakończono', paused: 'Wstrzymano', delayed: 'Opóźniony start', error: 'Wymaga uwagi', idle: 'Gotowa', unavailable: 'Niedostępna', until: 'do', since: 'od', dishwasher: 'Zmywarka', washer: 'Pralka', dryer: 'Suszarka', run_dryer: 'Suszenie' },
+  en: { washing: 'Washing', spinning: 'Spinning', washing_washer: 'Washing', drying: 'Drying', finished: 'Finished', paused: 'Paused', delayed: 'Delayed start', error: 'Needs attention', idle: 'Idle', unavailable: 'Unavailable', until: 'until', since: 'since', dishwasher: 'Dishwasher', washer: 'Washing machine', dryer: 'Tumble dryer', run_dryer: 'Drying', vacuum: 'Robot vacuum', mower: 'Robot mower', run_vacuum: 'Cleaning', run_mower: 'Mowing', returning: 'Returning', docked: 'Docked', battery: 'Battery' },
+  pl: { washing: 'Mycie', spinning: 'Wirowanie', washing_washer: 'Pranie', drying: 'Suszenie', finished: 'Zakończono', paused: 'Wstrzymano', delayed: 'Opóźniony start', error: 'Wymaga uwagi', idle: 'Gotowa', unavailable: 'Niedostępna', until: 'do', since: 'od', dishwasher: 'Zmywarka', washer: 'Pralka', dryer: 'Suszarka', run_dryer: 'Suszenie', vacuum: 'Odkurzacz', mower: 'Kosiarka', run_vacuum: 'Sprząta', run_mower: 'Kosi', returning: 'Wraca do bazy', docked: 'Na stacji', battery: 'Bateria' },
 };
 
 function normalizeState(raw, domain, config, progress) {
@@ -160,7 +173,7 @@ function dryerSvg(state, variant, size) {
     showWaves = false;
   } else if (state === 'error') {
     inside = circle('#f44336', 0.18);
-    overlay = '<path class="alert" d="M12,11.3 V15 M12,16.8 V17" fill="none" stroke="var(--mdi-anim-error-contrast,#ffd0cc)" stroke-width="1.5" stroke-linecap="round"/>';
+    overlay = '<path class="alert" d="M12,11.3 V15 M12,16.8 V17" fill="none" stroke="#ff8a80" stroke-width="1.6" stroke-linecap="round"/>';
     showWaves = false;
   } else if (state === 'paused') {
     overlay = '<path d="M10.2,11.8 V16.2 M13.8,11.8 V16.2" fill="none" stroke="var(--mdi-anim-warning,#ffa600)" stroke-width="1.5" stroke-linecap="round"/>';
@@ -179,7 +192,60 @@ function dryerSvg(state, variant, size) {
   </svg>`;
 }
 
+function vacuumSvg(state, variant, size) {
+  const running = state === 'washing' || state === 'returning';
+  const warm = state === 'returning';
+  const swayClass = state === 'washing' && variant === 'sway' ? ' sway' : '';
+  let arc = '';
+  let overlay = '';
+  if (running) {
+    arc = `<circle class="${warm ? 'vring slow rev' : 'vring'}" cx="12" cy="12" r="9" fill="none" stroke="${warm ? '#ffb454' : '#3b9cff'}" stroke-width="1.7" stroke-dasharray="17 40" stroke-linecap="round"/>`;
+  } else if (state === 'error') {
+    overlay = '<path d="M12,10.2 V13 M12,14.5 V14.6" fill="none" stroke="var(--card-background-color,#1c1c1c)" stroke-width="1.4" stroke-linecap="round"/>';
+  } else if (state === 'paused') {
+    overlay = '<path d="M10.6,10.6 V13.6 M13.4,10.6 V13.6" fill="none" stroke="var(--card-background-color,#1c1c1c)" stroke-width="1.3" stroke-linecap="round"/>';
+  }
+  return `<svg class="svg s-${state}${swayClass}" viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true">
+    <path class="frame" d="${VACUUM_RING}" fill-rule="evenodd"/>
+    ${arc}
+    <path class="frame vbody" d="${state === 'error' || state === 'paused' ? VACUUM_BODY_SOLID : VACUUM_BODY}" fill-rule="evenodd"/>
+    ${overlay}
+  </svg>`;
+}
+
+function mowerSvg(state, variant, size) {
+  const running = state === 'washing' || state === 'returning';
+  const warm = state === 'returning';
+  const col = warm ? '#ffb454' : '#4cd08a';
+  const swayClass = state === 'washing' && variant === 'sway' ? ' sway' : '';
+  let wheel = '';
+  let overlay = '';
+  let light = '';
+  if (running) {
+    wheel = `<circle cx="6" cy="14" r="3" fill="${col}" opacity=".22"/><g class="spokes"><path d="M6,14 V11.4 M6,14 L8.25,15.3 M6,14 L3.75,15.3" fill="none" stroke="${warm ? '#fff1d6' : '#c9f7dc'}" stroke-width="1" stroke-linecap="round"/></g>`;
+    light = `<path class="blink" d="M15,10 V12 H20.25 C19.92,11.27 19.5,10.6 19,10 Z" fill="${col}"/>`;
+  } else if (state === 'error') {
+    wheel = '<circle cx="6" cy="14" r="3" fill="#f44336" opacity=".25"/>';
+    overlay = '<path d="M10.8,6.8 V10.4 M10.8,12 V12.1" fill="none" stroke="var(--card-background-color,#1c1c1c)" stroke-width="1.6" stroke-linecap="round"/>';
+  } else if (state === 'paused') {
+    overlay = '<path d="M9.4,7 V11 M12.4,7 V11" fill="none" stroke="var(--card-background-color,#1c1c1c)" stroke-width="1.5" stroke-linecap="round"/>';
+  } else if (state === 'idle') {
+    light = '<path class="blink slowglow" d="M15,10 V12 H20.25 C19.92,11.27 19.5,10.6 19,10 Z" fill="#4cd08a"/>';
+  }
+  const bob = running ? ' bob' : '';
+  return `<svg class="svg s-${state}${swayClass}" viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true">
+    <g class="mowbody${bob}">
+      ${wheel}
+      <path class="frame" d="${MOWER_PATH}" fill-rule="evenodd"/>
+      ${light}
+      ${overlay}
+    </g>
+  </svg>`;
+}
+
 function iconSvg(appliance, state, variant, size) {
+  if (appliance === 'vacuum') return vacuumSvg(state, variant, size);
+  if (appliance === 'mower') return mowerSvg(state, variant, size);
   if (appliance === 'dryer') return dryerSvg(state, variant, size);
   if (appliance === 'washer') return washerSvg(state, variant, size);
   const a = APPLIANCES[appliance] || APPLIANCES.dishwasher;
@@ -247,11 +313,25 @@ ha-card { height: 100%; overflow: hidden; cursor: pointer; }
 .drop.hot { fill: #ffb454; animation: heatwave 1.8s ease-in-out infinite; }
 .drop.dwave1 { animation-delay: .6s; }
 .svg.s-washing .drop.hot, .svg.s-drying .drop.hot { fill: #ffb454; }
+.svg.s-returning .frame { fill: #ffcf8a; }
+.svg.s-washing .vbody { fill: #8fd0ff; animation: pulse2 1.8s ease-in-out infinite; }
+.svg.s-returning .vbody { fill: #ffcf8a; animation: pulse2 2.6s ease-in-out infinite; }
+.svg.s-idle .vbody { fill: #9be0b8; }
+.vring { transform-origin: 12px 12px; animation: spin 2.2s linear infinite; }
+.vring.slow { animation-duration: 4s; }
+.vring.rev { animation-direction: reverse; }
+.slowglow { animation: glowslow 3.2s ease-in-out infinite; }
+.spokes { transform-origin: 6px 14px; animation: spin 1.1s linear infinite; }
+.blink { animation: pulse 1.4s ease-in-out infinite; }
+.mowbody.bob { animation: bob .5s ease-in-out infinite alternate; }
 .half.tumble { animation: tumble 2.4s ease-in-out infinite alternate; }
 .half.spinfast { animation: spin 0.45s linear infinite; }
 .ring { transform-origin: 12px 14px; animation: spin 0.9s linear infinite; }
 .wm-water { animation: ww 1.6s linear infinite; }
 
+@keyframes bob { from { transform: translateY(0); } to { transform: translateY(-.35px); } }
+@keyframes pulse2 { 50% { opacity: .82; } }
+@keyframes glowslow { 50% { opacity: .35; } }
 @keyframes glow { 50% { opacity: .08; } }
 @keyframes heatwave { 0%, 100% { transform: translateY(1.1px); opacity: .55; } 50% { transform: translateY(-.9px); opacity: 1; } }
 @keyframes tumble { from { transform: rotate(-70deg); } to { transform: rotate(200deg); } }
@@ -325,14 +405,19 @@ class MdiAnimatedCard extends Base {
     const v = this._compute();
     const lang = this._lang();
     const name = this._config.name ?? v.st?.attributes?.friendly_name ?? LABELS[lang][this._config.appliance];
-    const sig = JSON.stringify([v.state, v.raw, Number.isFinite(v.progress) ? Math.round(v.progress) : null, v.finish, v.st?.last_changed, name, lang, this._config]);
+    const sig = JSON.stringify([v.state, v.raw, this._hass?.states?.[this._config.battery_entity]?.state, v.st?.attributes?.battery_level, Number.isFinite(v.progress) ? Math.round(v.progress) : null, v.finish, v.st?.last_changed, name, lang, this._config]);
     if (sig === this._sig) return;
     this._sig = sig;
 
     const L = LABELS[lang];
     const c = this._config;
     let sub = '';
-    if (v.state === 'washing' || v.state === 'drying' || v.state === 'spinning') {
+    const robot = c.appliance === 'vacuum' || c.appliance === 'mower';
+    if (robot) {
+      const bs = c.battery_entity ? this._hass?.states?.[c.battery_entity] : null;
+      const bv = bs ? Number(bs.state) : Number(v.st?.attributes?.battery_level);
+      if (Number.isFinite(bv) && v.state !== 'unavailable') sub = `${L.battery} ${Math.round(bv)}%`;
+    } else if (v.state === 'washing' || v.state === 'drying' || v.state === 'spinning') {
       const parts = [];
       if (c.show_progress && Number.isFinite(v.progress)) parts.push(`${Math.round(v.progress)}%`);
       if (c.show_finish_time && v.finish) {
@@ -347,8 +432,8 @@ class MdiAnimatedCard extends Base {
       }
       sub = parts.join(' · ');
     }
-    const showBar = c.show_progress && Number.isFinite(v.progress) && (v.state === 'washing' || v.state === 'drying' || v.state === 'spinning');
-    const label = v.state === 'unavailable' ? L.unavailable : (v.state === 'washing' && c.appliance === 'washer' ? L.washing_washer : (v.state === 'washing' || v.state === 'drying') && c.appliance === 'dryer' ? L.run_dryer : L[v.state]);
+    const showBar = !robot && c.show_progress && Number.isFinite(v.progress) && (v.state === 'washing' || v.state === 'drying' || v.state === 'spinning');
+    const label = v.state === 'unavailable' ? L.unavailable : robot && v.state === 'washing' ? L['run_' + c.appliance] : robot && v.state === 'idle' ? L.docked : (v.state === 'washing' && c.appliance === 'washer' ? L.washing_washer : (v.state === 'washing' || v.state === 'drying') && c.appliance === 'dryer' ? L.run_dryer : L[v.state]);
     const esc = (s) => String(s).replace(/[&<>"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
     this.shadowRoot.innerHTML = `
       <style>${STYLE}</style>
@@ -388,6 +473,7 @@ class MdiAnimatedCardEditor extends Base {
       { name: 'name', selector: { text: {} } },
       { name: 'variant', selector: { select: { mode: 'dropdown', options: (APPLIANCES[this._config?.appliance]?.variants || APPLIANCES.dishwasher.variants).map((v) => ({ value: v, label: v })) } } },
       { name: 'progress_entity', selector: { entity: { domain: 'sensor' } } },
+      { name: 'battery_entity', selector: { entity: { domain: 'sensor' } } },
       { name: 'finish_entity', selector: { entity: { domain: 'sensor' } } },
       { name: 'drying_from_progress', selector: { number: { min: 1, max: 100, step: 1, mode: 'box' } } },
       { name: 'layout', selector: { select: { mode: 'dropdown', options: [{ value: 'horizontal', label: 'horizontal' }, { value: 'vertical', label: 'vertical' }] } } },
@@ -400,7 +486,7 @@ class MdiAnimatedCardEditor extends Base {
       this._form = document.createElement('ha-form');
       this._form.computeLabel = (s) => ({
         appliance: 'Appliance', entity: 'Status entity (required)', name: 'Name', variant: 'Washing animation',
-        progress_entity: 'Progress entity (optional, %)', finish_entity: 'Finish time entity (optional)',
+        progress_entity: 'Progress entity (optional, %)', battery_entity: 'Battery entity (robots, optional)', finish_entity: 'Finish time entity (optional)',
         drying_from_progress: 'Show drying from progress % (optional)', layout: 'Layout',
         show_progress: 'Show progress', show_finish_time: 'Show finish time',
       }[s.name] || s.name);
@@ -425,7 +511,7 @@ if (!window.customCards.some((c) => c.type === 'mdi-animated-card')) {
   window.customCards.push({
     type: 'mdi-animated-card',
     name: 'MDI Animated Appliances',
-    description: 'Animated Material Design Icon of a household appliance driven by an entity (dishwasher, washing machine, tumble dryer).',
+    description: 'Animated Material Design Icon of a household appliance driven by an entity (dishwasher, washing machine, tumble dryer, robot vacuum, robot mower).',
     preview: true,
     documentationURL: 'https://github.com/bglowacki/mdi-animated-appliances',
   });
